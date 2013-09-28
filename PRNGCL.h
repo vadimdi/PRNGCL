@@ -39,6 +39,5 @@
 #define prngcl_h
 
 #include "clinterface/hgpucl.h"	// interface with OpenCL nVidia SDK and AMD APP SDK
-#include "random/random.h"      // pseudo-random number generators library
 
 #endif
