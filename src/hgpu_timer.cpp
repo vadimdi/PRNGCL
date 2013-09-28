@@ -1,10 +1,10 @@
 /******************************************************************************
- * @file     hgpucl.cpp
+ * @file     hgpu_timer.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.0
  *
  * @brief    [HGPU library]
- *           Interface for OpenCL AMD APP & nVidia SDK environment
+ *           timer submodule
  *
  *
  * @section  LICENSE
@@ -35,24 +35,50 @@
  * 
  *****************************************************************************/
 
-#include "hgpucl.h"
+#include "../include/hgpu_timer.h"
 
-void
-HGPU_GPU_test(int argc, char** argv){
+// start timer
+HGPU_timer
+HGPU_timer_start(void){
+    return clock();
+}
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
+// get timer value in seconds (time delta)
+double
+HGPU_timer_get(HGPU_timer timer){
+    double result = ((double) (clock() - timer)) / CLOCKS_PER_SEC;
+    return result;
+}
 
-    printf("********************************************************\n");
-    printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-    printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
-    printf("********************************************************\n\n");
+// get timer value in seconds (from start)
+double
+HGPU_timer_get_from_start(void){
+    return ((double) clock()) / CLOCKS_PER_SEC;
+}
 
-    HGPU_GPU_context_print_used_hardware(context);
+// get date-time string
+char*
+HGPU_timer_get_current_datetime(void){
+    time_t tim;
+	time(&tim);
+    char* result = (char*) calloc(30,sizeof(char));
+#ifdef _WIN32
+    ctime_s(result, 30, &tim);
+#else
+    sprintf(result,"%s",ctime((const time_t*) &tim));
+#endif
+    HGPU_string_char_replace(result,HGPU_CHAR_CR,0);
+    HGPU_string_char_replace(result,HGPU_CHAR_NEWLINE,0);
+    return result;
+}
 
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
 
-    HGPU_GPU_context_delete(&context);
+// get (HGPU_timer_deviation) from profiling data
+HGPU_timer_deviation
+HGPU_timer_deviation_get(double elapsed_time, double elapsed_time_squared, double number_of_elements){
+    HGPU_timer_deviation execution_time;
+    execution_time.mean = elapsed_time;
+    execution_time.number_of_elements = number_of_elements;
+    execution_time.deviation = number_of_elements < 2 ? 0.0 : sqrt(abs(elapsed_time_squared - pow(elapsed_time,2)) / number_of_elements);
+    return execution_time;
 }

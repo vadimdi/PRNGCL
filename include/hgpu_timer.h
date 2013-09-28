@@ -1,10 +1,10 @@
 /******************************************************************************
- * @file     hgpucl.cpp
+ * @file     hgpu_timer.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.0
  *
  * @brief    [HGPU library]
- *           Interface for OpenCL AMD APP & nVidia SDK environment
+ *           timer submodule
  *
  *
  * @section  LICENSE
@@ -35,24 +35,29 @@
  * 
  *****************************************************************************/
 
-#include "hgpucl.h"
+#ifndef HGPUCL_TIMER_H
+#define HGPUCL_TIMER_H
 
-void
-HGPU_GPU_test(int argc, char** argv){
+#include "../clinterface/platform.h"
+#include "../clinterface/hgpucl_constants.h"
+#include "hgpu_string.h"
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
+#define HGPU_timer clock_t
 
-    printf("********************************************************\n");
-    printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-    printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
-    printf("********************************************************\n\n");
+    // structure for buffer
+    typedef struct{
+                           double   mean;                // mean value
+                           double   deviation;           // deviation
+                           double   number_of_elements;  // number of elements
+    } HGPU_timer_deviation;
 
-    HGPU_GPU_context_print_used_hardware(context);
+    const HGPU_timer_deviation HGPU_timer_deviation_default = {0.0, 0.0, 0};
 
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
+             HGPU_timer   HGPU_timer_start(void);
+                 double   HGPU_timer_get(HGPU_timer timer);
+                 double   HGPU_timer_get_from_start(void);
+                   char*  HGPU_timer_get_current_datetime(void);
 
-    HGPU_GPU_context_delete(&context);
-}
+   HGPU_timer_deviation   HGPU_timer_deviation_get(double elapsed_time, double elapsed_time_squared, double number_of_elements);
+
+#endif

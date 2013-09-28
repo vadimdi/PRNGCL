@@ -1,10 +1,11 @@
 /******************************************************************************
- * @file     hgpucl.cpp
+ * @file     prngcl_constant.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.0
  *
- * @brief    [HGPU library]
- *           Interface for OpenCL AMD APP & nVidia SDK environment
+ * @brief    [PRNGCL library]
+ *           contains OpenCL implementation of constant "pseudo-random number generator",
+ *           which produces series of constant values for debugging purposes
  *
  *
  * @section  LICENSE
@@ -35,24 +36,26 @@
  * 
  *****************************************************************************/
 
-#include "hgpucl.h"
+#ifndef PRNGCL_CONSTANT_CL
+#define PRNGCL_CONSTANT_CL
 
-void
-HGPU_GPU_test(int argc, char** argv){
+#include "prngcl_common.cl"
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
-
-    printf("********************************************************\n");
-    printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-    printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
-    printf("********************************************************\n\n");
-
-    HGPU_GPU_context_print_used_hardware(context);
-
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
-
-    HGPU_GPU_context_delete(&context);
+/**
+ * generates the series of constant values predefined by CONSTANT_FP parameter
+ * @param randoms output buffer for generated PRNs
+ * @param N number of PRNs to be produced
+ */
+__kernel void
+constant_series(__global hgpu_float4* randoms,
+                const uint N)
+{
+    uint giddst = GID;
+        for (uint i = 0; i < N; i++) {
+        randoms[giddst] = (hgpu_float4) CONSTANT_FP;
+        giddst += GID_SIZE;
+    }
 }
+
+
+#endif

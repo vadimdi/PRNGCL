@@ -1,10 +1,10 @@
 /******************************************************************************
- * @file     hgpucl.cpp
+ * @file     hgpu_string.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.0
  *
  * @brief    [HGPU library]
- *           Interface for OpenCL AMD APP & nVidia SDK environment
+ *           string submodule
  *
  *
  * @section  LICENSE
@@ -35,24 +35,25 @@
  * 
  *****************************************************************************/
 
-#include "hgpucl.h"
+#ifndef HGPU_STRING_H
+#define HGPU_STRING_H
 
-void
-HGPU_GPU_test(int argc, char** argv){
+#include "../clinterface/platform.h"
+#include "../clinterface/hgpucl_constants.h"
+#include "hgpu_error.h"
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
+                    int   HGPU_string_char_replace(char* str, char search, char replace);
+                   void   HGPU_string_to_lowercase(char* str);
+                   void   HGPU_string_to_uppercase(char* str);
+                   void   HGPU_string_trim(char*& str);
+                   char*  HGPU_string_clone(const char* str);
+                   void   HGPU_string_resize(char** str,size_t size_new);
+                   void   HGPU_string_delete_symbols_except_numbers_and_dots(char*& str);
+                   void   HGPU_string_join(char** str_dest,char* str_src);
+                   char*  HGPU_string_get_from_integer(int value);
+                   char*  HGPU_string_get_from_double(double value);
+                   bool   HGPU_string_cmp(const char* str1, const char* str2);
 
-    printf("********************************************************\n");
-    printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-    printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
-    printf("********************************************************\n\n");
+                 size_t*  HGPU_string_size_t_clone(const size_t* source,const size_t size);
 
-    HGPU_GPU_context_print_used_hardware(context);
-
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
-
-    HGPU_GPU_context_delete(&context);
-}
+#endif

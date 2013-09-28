@@ -1,10 +1,10 @@
 /******************************************************************************
- * @file     hgpucl.cpp
+ * @file     hgpu_md5.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.0
  *
  * @brief    [HGPU library]
- *           Interface for OpenCL AMD APP & nVidia SDK environment
+ *           MD5 submodule for HGPU package
  *
  *
  * @section  LICENSE
@@ -35,24 +35,21 @@
  * 
  *****************************************************************************/
 
-#include "hgpucl.h"
+#ifndef HGPUCL_MD5_H
+#define HGPUCL_MD5_H
 
-void
-HGPU_GPU_test(int argc, char** argv){
+#include "../clinterface/platform.h"
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
+#define HGPU_MD5_BLOCKSIZE   64
 
-    printf("********************************************************\n");
-    printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-    printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
-    printf("********************************************************\n\n");
+                    void  HGPU_md5_init(void);
+                    void  HGPU_md5_finalize(void);
+                    void  HGPU_md5_step(const unsigned char* md5_block);
+                    void  HGPU_md5_getword(const unsigned char* buffer, unsigned int* x, unsigned int len);
+                    void  HGPU_md5_setword(const unsigned int* x, unsigned char* buffer, unsigned int len);
+                    void  HGPU_md5_update(const unsigned char* input, unsigned int len);
+                    void  HGPU_md5_update(const char*          input, unsigned int len);
+                    char* HGPU_md5_getresult(void);
+                    char* HGPU_md5(const char* str);
 
-    HGPU_GPU_context_print_used_hardware(context);
-
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
-
-    HGPU_GPU_context_delete(&context);
-}
+#endif
