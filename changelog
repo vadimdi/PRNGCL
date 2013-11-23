@@ -1,0 +1,13 @@
+**************************
+PRNGCL library change logs
+**************************
+
+-- Version 1.1.0 --
+- Improved double precision production on GPU
+- Improved performance of PRNs production on CPU
+- Improved Makefile to be used together with NVIDIA, AMD and INTEL OpenCL SDK
+- Root folders of library were changed
+- Fixed some bugs
+
+-- Version 1.0.0 --
+First release
