@@ -122,3 +122,19 @@ HGPU_convert_vendor_from_uint(unsigned int vendor_code){
             break;
     }
 }
+
+#ifdef HGPU_data_type_none
+size_t
+HGPU_convert_data_type_to_size_t(HGPU_data_type data_type){
+    switch(data_type){
+        CASE_CODE(HGPU_data_type_none,   0);
+        CASE_CODE(HGPU_data_type_float,  sizeof(float));
+        CASE_CODE(HGPU_data_type_double, sizeof(double));
+        CASE_CODE(HGPU_data_type_int,    sizeof(int));
+        CASE_CODE(HGPU_data_type_uint,   sizeof(unsigned int));
+        default:
+            return 0;
+            break;
+    }
+}
+#endif
