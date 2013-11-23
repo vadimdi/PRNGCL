@@ -50,12 +50,12 @@ HGPU_string_char_replace(char* str, char search, char replace){
 
 void
 HGPU_string_to_lowercase(char* str){
-    for(size_t i = 0; str[i]; i++) str[i] = tolower(str[i]);
+    for(size_t i = 0; str[i]; i++) str[i] = (char) tolower(str[i]);
 }
 
 void
 HGPU_string_to_uppercase(char* str){
-    for(size_t i = 0; str[i]; i++) str[i] = toupper(str[i]);
+    for(size_t i = 0; str[i]; i++) str[i] = (char) toupper(str[i]);
 }
 
 char*
@@ -75,8 +75,8 @@ HGPU_string_clone(const char* str){
 void
 HGPU_string_trim(char*& str){
     if (!str) return;
-    int len_left  = 0;
-    int len_right = strlen(str)-1;
+    size_t len_left  = 0;
+    size_t len_right = strlen(str)-1;
     while((len_right>0) && (isspace(str[len_right]))) str[len_right--] = 0;
     while((len_left<len_right) && (isspace(str[len_left]))) len_left++;
     if (len_left==len_right) return;
@@ -118,7 +118,9 @@ HGPU_string_join(char** str_dest,char* str_src){
         HGPU_error_note(HGPU_ERROR_NO_MEMORY,NULL);
         return;
     }
+#ifdef _WIN32
     size_t bytes_dest = len_dest*sizeof(char);
+#endif
     if ((str_dest) && (*str_dest)) {
         memcpy_s(result,bytes_dest,*str_dest,strlen(*str_dest)*sizeof(char));
         memcpy_s((result+strlen(*str_dest)*sizeof(char)),bytes_dest,str_src,len_src*sizeof(char));
