@@ -38,8 +38,8 @@
 #ifndef HGPUCL_TIMER_H
 #define HGPUCL_TIMER_H
 
-#include "../clinterface/platform.h"
-#include "../clinterface/hgpucl_constants.h"
+#include "../hgpucl/platform.h"
+#include "../hgpucl/hgpucl_constants.h"
 #include "hgpu_string.h"
 
 #define HGPU_timer clock_t
