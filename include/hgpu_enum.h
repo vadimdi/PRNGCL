@@ -38,7 +38,7 @@
 #ifndef HGPU_ENUM_H
 #define HGPU_ENUM_H
 
-#include "../clinterface/platform.h"
+#include "../hgpucl/platform.h"
 #include "hgpu_string.h"
 
     typedef enum enum_HGPU_precision {
@@ -60,9 +60,11 @@
             HGPU_PRNG_output_type_none,         // dummy PRNG
             HGPU_PRNG_output_type_uint,         // PRNG returns (unsigned integer)s only
             HGPU_PRNG_output_type_uint4,        // PRNG returns (unsigned integer4)s only
-            HGPU_PRNG_output_type_float,        // PRNG returns (float)s only  (single precision)
+            HGPU_PRNG_output_type_uint4by1,     // PRNG returns (unsigned integer4)s only - for double precision checking after each double
+            HGPU_PRNG_output_type_float,        // PRNG returns (float)s only   (single precision)
             HGPU_PRNG_output_type_float4,       // PRNG returns (float4)s only  (single precision)
-            HGPU_PRNG_output_type_double,       // PRNG returns (double)s only (double precision)
+            HGPU_PRNG_output_type_float4by1,    // PRNG returns (float4)s only  (single precision) - for double precision checking after each double
+            HGPU_PRNG_output_type_double,       // PRNG returns (double)s only  (double precision)
             HGPU_PRNG_output_type_double4       // PRNG returns (double4)s only (double precision)
     } HGPU_PRNG_output_type;
 
@@ -90,6 +92,10 @@
     HGPU_precision   HGPU_convert_precision_from_str(const char* precision);
         const char*  HGPU_convert_precision_to_str(HGPU_precision precision);
       unsigned int   HGPU_convert_precision_to_uint(HGPU_precision precision);
+
+#ifdef HGPU_data_type_none
+            size_t   HGPU_convert_data_type_to_size_t(HGPU_data_type data_type);
+#endif
 
     HGPU_GPU_vendor  HGPU_convert_vendor_from_str(const char* vendor_str);
     HGPU_GPU_vendor  HGPU_convert_vendor_from_uint(unsigned int vendor_code);
