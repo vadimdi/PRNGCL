@@ -3,14 +3,21 @@ PRNGCL
 
 PRNGCL: OpenCL Library of Pseudo-Random Number Generators for Monte Carlo Simulations
 
-AMD:
-make amd
 
-NVIDIA:
-make nvidia
+Compilation
+===========
 
-INTEL:
-make intel
+AMD
+
+    $ make amd
+
+NVIDIA
+
+    $ make nvidia
+
+INTEL
+
+    $ make intel
 
 
 For licensing information, see LICENSE
