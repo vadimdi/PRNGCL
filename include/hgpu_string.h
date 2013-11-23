@@ -38,8 +38,8 @@
 #ifndef HGPU_STRING_H
 #define HGPU_STRING_H
 
-#include "../clinterface/platform.h"
-#include "../clinterface/hgpucl_constants.h"
+#include "../hgpucl/platform.h"
+#include "../hgpucl/hgpucl_constants.h"
 #include "hgpu_error.h"
 
                     int   HGPU_string_char_replace(char* str, char search, char replace);
