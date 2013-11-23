@@ -38,7 +38,7 @@
 #ifndef HGPUCL_MD5_H
 #define HGPUCL_MD5_H
 
-#include "../clinterface/platform.h"
+#include "../hgpucl/platform.h"
 
 #define HGPU_MD5_BLOCKSIZE   64
 
