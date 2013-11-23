@@ -1,20 +1,17 @@
+all: amd intel nvidia
+
 CC = g++
-CFLAGS = -I$(AMDAPPSDKROOT)/include -g
-LDFLAGS = -L$(AMDAPPSDKROOT)/lib/x86_64 -lOpenCL
+CFLAGS = -Wall -W -O2
 
-# project name
-TARGET = prngcl
-
-SRCS =  PRNGCL.cpp \
-	clinterface/clinterface.cpp \
-	clinterface/hgpucl.cpp \
-	clinterface/hgpucl_buffer.cpp \
-	clinterface/hgpucl_context.cpp \
-	clinterface/hgpucl_devices.cpp \
-	clinterface/hgpucl_error.cpp \
-	clinterface/hgpucl_kernel.cpp \
-	clinterface/hgpucl_platforms.cpp \
-	clinterface/hgpucl_program.cpp \
+SRCS = PRNGCL.cpp \
+	hgpucl/hgpucl.cpp \
+	hgpucl/hgpucl_buffer.cpp \
+	hgpucl/hgpucl_context.cpp \
+	hgpucl/hgpucl_devices.cpp \
+	hgpucl/hgpucl_error.cpp \
+	hgpucl/hgpucl_kernel.cpp \
+	hgpucl/hgpucl_platforms.cpp \
+	hgpucl/hgpucl_program.cpp \
 	src/hgpu_convert.cpp \
 	src/hgpu_enum.cpp \
 	src/hgpu_error.cpp \
@@ -23,28 +20,28 @@ SRCS =  PRNGCL.cpp \
 	src/hgpu_parameters.cpp \
 	src/hgpu_string.cpp \
 	src/hgpu_timer.cpp \
-	random/hgpu_prng.cpp \
-	random/hgpu_prng_test.cpp \
-	random/prngcl_xor128.cpp \
-	random/prngcl_xor7.cpp \
-	random/prngcl_ranmar.cpp \
-	random/prngcl_ranlux.cpp \
-	random/prngcl_ranecu.cpp \
-	random/prngcl_pm.cpp \
-	random/prngcl_constant.cpp \
-	random/prngcl_mrg32k3a.cpp
+	randomcl/hgpu_prng.cpp \
+	randomcl/hgpu_prng_test.cpp \
+	randomcl/prngcl_xor128.cpp \
+	randomcl/prngcl_xor7.cpp \
+	randomcl/prngcl_ranmar.cpp \
+	randomcl/prngcl_ranlux.cpp \
+	randomcl/prngcl_ranecu.cpp \
+	randomcl/prngcl_pm.cpp \
+	randomcl/prngcl_constant.cpp \
+	randomcl/prngcl_mrg32k3a.cpp
 	
-HDRS =  PRNGCL.h \
-	clinterface/clinterface.h \
-	clinterface/hgpucl.h \
-	clinterface/hgpucl_buffer.h \
-	clinterface/hgpucl_constants.h \
-	clinterface/hgpucl_context.h \
-	clinterface/hgpucl_devices.h \
-	clinterface/hgpucl_error.h \
-	clinterface/hgpucl_kernel.h \
-	clinterface/hgpucl_platforms.h \
-	clinterface/hgpucl_program.h \
+HDRS = PRNGCL.h \
+	hgpucl/hgpucl.h \
+	hgpucl/hgpucl.h \
+	hgpucl/hgpucl_buffer.h \
+	hgpucl/hgpucl_constants.h \
+	hgpucl/hgpucl_context.h \
+	hgpucl/hgpucl_devices.h \
+	hgpucl/hgpucl_error.h \
+	hgpucl/hgpucl_kernel.h \
+	hgpucl/hgpucl_platforms.h \
+	hgpucl/hgpucl_program.h \
 	include/hgpu_convert.h \
 	include/hgpu_enum.h \
 	include/hgpu_error.h \
@@ -53,23 +50,53 @@ HDRS =  PRNGCL.h \
 	include/hgpu_parameters.h \
 	include/hgpu_string.h \
 	include/hgpu_timer.h \
-	random/hgpu_prng.cpp \
-	random/hgpu_prng_test.h
+	randomcl/hgpu_prng_test.h
 
-OBJS = $(SRCS:.cpp=.o)
-
-$(TARGET): $(SRCS) $(HDRS)
+is_64=$(shell s=`uname -m`; if (echo $$s | grep x86_64 > /dev/null); then echo 1; fi)
 
 ifndef AMDAPPSDKROOT
-	@echo >&2
-	@echo "AMD APP SDK not installed" >&2
-	@exit 1
+AMDAPPSDKROOT=/opt/AMDAPP/
+endif
+		
+# amd
+SDK_INC_AMD=$(AMDAPPSDKROOT)/include
+ifeq ($(is_64), 1)
+SDK_LIB_AMD=$(AMDAPPSDKROOT)/lib/x86_64/
 else
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+SDK_LIB_AMD=$(AMDAPPSDKROOT)/lib/x86/
 endif
 
+# intel
+SDK_INC_INTEL=/usr/include/
+ifeq ($(is_64), 1)
+SDK_LIB_INTEL=/usr/lib64/
+endif
+
+# nvidia
+SDK_INC_NVIDIA=/usr/local/cuda/include/
+SDK_LIB_NVIDIA=/usr/lib/
+
+OBJS_AMD=$(patsubst %.c,%.amd.o,$(SRCS))
+OBJS_INTEL=$(patsubst %.c,%.intel.o,$(SRCS))
+OBJS_NVIDIA=$(patsubst %.c,%.nvidia.o,$(SRCS))
+
+TARGET=$(patsubst %.cpp,%,$(wildcard *.cpp))
+
+amd:	$(join $(TARGET),.amd)
+intel:	$(join $(TARGET),.intel)
+nvidia:	$(join $(TARGET),.nvidia)
+
+%.amd:	$(SRCS) $(HDRS)
+	$(CC) $(CFLAGS) $(SRCS) -I$(SDK_INC_AMD) -L$(SDK_LIB_AMD) -Wl,-rpath,$(SDK_LIB_AMD)  -o $@ -lOpenCL
+
+%.intel:$(SRCS) $(HDRS)
+	$(CC) $(CFLAGS) $(SRCS) -I$(SDK_INC_INTEL) -L$(SDK_LIB_INTEL) -Wl,-rpath,$(PATH_TO_INTEL_LIB) -o $@ -lOpenCL
+
+%.nvidia:$(SRCS) $(HDRS)
+	$(CC) $(CFLAGS) $(SRCS) -I$(SDK_INC_NVIDIA) -L$(SDK_LIB_NVIDIA) -o $@ -lOpenCL
+
 clobber:
-	rm -rf $(TARGET) $(OBJS)
+	rm -rf $(TARGET).amd $(TARGET).intel $(TARGET).nvidia $(OBJS_AMD) $(OBJS_INTEL) $(OBJS_NVIDIA)
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET).amd $(TARGET).intel $(TARGET).nvidia
