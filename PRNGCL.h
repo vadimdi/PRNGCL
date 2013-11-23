@@ -4,7 +4,7 @@
  * @version  1.0
  *
  * @brief    [PRNGCL library]
- *           Library of pseudo-random number generators for Monte Carlo simulations of GPUs
+ *           Library of pseudo-random number generators for Monte Carlo simulations on GPUs
  *
  *
  * @section  LICENSE
@@ -38,6 +38,6 @@
 #ifndef prngcl_h
 #define prngcl_h
 
-#include "clinterface/hgpucl.h"	// interface with OpenCL nVidia SDK and AMD APP SDK
+#include "hgpucl/hgpucl.h"    // interface with OpenCL nVidia SDK and AMD APP SDK
 
 #endif
