@@ -1,10 +1,10 @@
 /******************************************************************************
  * @file     PRNGCL.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
- *           Library of pseudo-random number generators for Monte Carlo simulations of GPUs
+ *           Library of pseudo-random number generators for Monte Carlo simulations on GPUs
  *
  *
  * @section  LICENSE
