@@ -259,6 +259,7 @@ HGPU_parameters_get_from_environment(void){
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_WARNING_ERROR);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_NO_CACHE);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_MAX_WORKGROUP_SIZE);
+    HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_DEVICES_NUMBER);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_RANDSERIES);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_PRECISION);
@@ -273,13 +274,13 @@ HGPU_parameters_get_from_environment(void){
 }
 
 // get all parameters - from command line and from ini-file (first parameter in command-line without "-" or "/")
+// channel importance (1=most important)
+// 1. command line
+// 2. .ini-file
+// 3. environment variables
 HGPU_parameter**
 HGPU_parameters_get_all(int argc, char** argv){
-    HGPU_parameter** result = HGPU_parameters_get_from_commandline(argc,argv);
-    HGPU_parameter** parameters_environment = HGPU_parameters_get_from_environment();
-    HGPU_parameters_join(&result,parameters_environment);
-    HGPU_parameters_delete(&parameters_environment);
-
+    HGPU_parameter** result = HGPU_parameters_get_from_environment();
     int i=1;
     while (i<argc){
         if ((argv[i]) && (strlen(argv[i])) && (argv[i][0]!=HGPU_CHAR_MINUS) && (argv[i][0]!=HGPU_CHAR_SLASH)) {
@@ -290,6 +291,9 @@ HGPU_parameters_get_all(int argc, char** argv){
         }
         i++;
     }
+    HGPU_parameter** parameters_commandline = HGPU_parameters_get_from_commandline(argc,argv);
+    HGPU_parameters_join(&result,parameters_commandline);
+    HGPU_parameters_delete(&parameters_commandline);
     return result;
 }
 
@@ -300,7 +304,7 @@ HGPU_parameters_get_from_inf_file(int inf_index){
     char* buffer_inf = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!file_name) || (!buffer_inf)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	unsigned int j = sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
 
     HGPU_parameter** result = HGPU_parameters_get_from_file(file_name);
@@ -317,13 +321,13 @@ HGPU_parameters_write_to_inf_file(HGPU_parameter** parameters,const unsigned cha
     char* buffer_inf = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!file_name) || (!buffer_inf)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	unsigned int j = sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
 
     char* inf_data = HGPU_parameters_put(parameters);
     HGPU_io_file_write(file_name,inf_data);
 
-    j = sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
     HGPU_io_file_write_binary(file_name,binary,bytes_in_binary);
 
@@ -488,7 +492,6 @@ HGPU_parameter_get(char* line){
     size_t parameter_length = 0;
     size_t value_length = 0;
     if ((line) && (strlen(line)>0)){
-        size_t line_length  = strlen(line);
         size_t remark_index = strcspn(line,HGPU_SYMBOL_REMARK);
         size_t eq_index     = strcspn(line,HGPU_SYMBOL_EQ);
         size_t ret_index    = strcspn(line,HGPU_SYMBOL_NEWLINE);
@@ -543,8 +546,8 @@ HGPU_parameter_get_from_commandline(char* line){
     HGPU_parameter* result = NULL;
     if ((line) && (strlen(line))) {
         char* line_new = line;
-        int line_length = strlen(line);
-        int line_index = 0;
+        size_t line_length = strlen(line);
+        size_t line_index = 0;
         while ((line_index<line_length) && ((line[line_index]==HGPU_CHAR_MINUS) || (line[line_index]==HGPU_CHAR_SLASH)
             || (line[line_index]==HGPU_CHAR_SPACE))) line_index++;
         if (line_index<line_length) line_new = line + line_index;
@@ -566,7 +569,9 @@ HGPU_parameter_get_from_environment(const char* parameter_name){
     }
 
     char* parameter = NULL;
+#ifdef _WIN32
     size_t parameter_length = HGPU_GPU_MAX_ENVIRONMENT_LENGTH;
+#endif
     _dupenv_s(&parameter,&parameter_length,p_name);
     if ((parameter) && (strlen(p_name)>strlen(HGPU_ENVIRONMENT_PREFIX))) {
         char* param = (char*) calloc(HGPU_GPU_MAX_ENVIRONMENT_LENGTH,sizeof(char));
@@ -665,7 +670,7 @@ HGPU_parameters_path_setup(HGPU_parameter** parameters){
     HGPU_io_path_get(&HGPU_io_path_inf);
     HGPU_io_path_get(&HGPU_io_path_working);
     HGPU_io_path_get(&HGPU_io_path_current);
-    char* init_root    = HGPU_io_path_get_root();
+    HGPU_io_path_get_root();
 
     if (parameters) return;
     HGPU_parameter* path_cl_root = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PATH_CL_ROOT);
