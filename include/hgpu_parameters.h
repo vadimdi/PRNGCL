@@ -38,8 +38,8 @@
 #ifndef HGPU_PARAMETERS_H
 #define HGPU_PARAMETERS_H
 
-#include "../clinterface/platform.h"
-#include "../clinterface/hgpucl_constants.h"
+#include "../hgpucl/platform.h"
+#include "../hgpucl/hgpucl_constants.h"
 #include "hgpu_error.h"
 #include "hgpu_string.h"
 #include "hgpu_io.h"
