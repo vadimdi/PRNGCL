@@ -38,10 +38,10 @@
 #ifndef HGPUCL_IO_H
 #define HGPUCL_IO_H
 
-#include "../clinterface/platform.h"
+#include "../hgpucl/platform.h"
 #include "hgpu_error.h"
 #include "hgpu_string.h"
-#include "../clinterface/hgpucl_constants.h"
+#include "../hgpucl/hgpucl_constants.h"
 
 
             extern char*  HGPU_io_path_working;
