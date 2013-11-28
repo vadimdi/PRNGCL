@@ -90,7 +90,7 @@ HGPU_io_path_set_separator(char** path,size_t path_length){
     if ((!path) || (!(*path)) || (!strlen(*path))) return;
     char** path_new = path;
     size_t path_length_old = strlen(*path_new);
-    char* path_last_symbol = (char*) (*path_new)+path_length_old-1;
+    char* path_last_symbol = (char*) (*path_new)+path_length_old;
     char* j_cur  = strstr(path_last_symbol - strlen(HGPU_GPU_PATH_SEPARATOR), HGPU_GPU_PATH_SEPARATOR);
     char* j_cur2 = strstr(path_last_symbol - strlen(HGPU_GPU_PATH_SEPARATOR2),HGPU_GPU_PATH_SEPARATOR2);
     if ((!j_cur) && (!j_cur2)) {

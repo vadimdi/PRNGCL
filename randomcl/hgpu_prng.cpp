@@ -773,7 +773,7 @@ HGPU_PRNG_benchmark(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_
             while((time_elapsed<duration) && (cycles<HGPU_PRNG_TEST_MAX_PASSES)) {  // HGPU_PRNG_TEST_DURATION=test duration in seconds
                 HGPU_PRNG_produce(context,prng_id);
                 cycles++;
-                time_elapsed = HGPU_timer_get(time_start);
+                time_elapsed += HGPU_timer_get(time_start);
             }
 
             double prns = ((double) cycles) * ((double) prng->parameters->samples) * ((double) prng->parameters->instances) * ((double) output_type_vals);

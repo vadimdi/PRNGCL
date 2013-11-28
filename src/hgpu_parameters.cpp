@@ -323,7 +323,6 @@ HGPU_parameters_write_to_inf_file(HGPU_parameter** parameters,const unsigned cha
 
 	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
-
     char* inf_data = HGPU_parameters_put(parameters);
     HGPU_io_file_write(file_name,inf_data);
 
