@@ -68,10 +68,9 @@ HGPU_GPU_example_pi(int argc, char** argv){
     HGPU_PRNG_set_default_instances(instances);        // set instances
     HGPU_PRNG_set_default_samples(samples_per_stream); // set samples (if instances=0 then [autoselection] and samples should be whole number of desired PRNs)
 
-    HGPU_parameter** parameters = HGPU_parameters_get_all(argc,argv);
-    HGPU_PRNG_set_default_with_parameters(parameters);
-//    HGPU_PRNG_default = HGPU_PRNG_description_get_with_name("MRG32K3A"); // PRNG to be used
-    prng_descr = HGPU_PRNG_description_get_with_parameters(parameters);
+    HGPU_PRNG_set_default_with_parameters(parameters_all);
+//    HGPU_PRNG_default = HGPU_PRNG_description_get_with_name("MRG32K3A"); // or manually set PRNG to be used
+    prng_descr = HGPU_PRNG_description_get_with_parameters(parameters_all);
     
     HGPU_PRNG* prng = HGPU_PRNG_new(prng_descr); // create new PRNG instance
 
@@ -129,8 +128,9 @@ HGPU_GPU_example_pi(int argc, char** argv){
     if (pi_acceptance_id<HGPU_GPU_MAX_BUFFERS)
         HGPU_GPU_context_buffer_release(context,pi_acceptance_id);
 
-    HGPU_PRNG_and_buffers_free(context,prng);    // release PRNG instance
+    HGPU_parameters_delete(&parameters_all);  // free parameters
+    HGPU_PRNG_and_buffers_free(context,prng); // release PRNG instance
 
     free(example_src);
-    HGPU_GPU_context_delete(&context);           // release context
+    HGPU_GPU_context_delete(&context);        // release context
 }
