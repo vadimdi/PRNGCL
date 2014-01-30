@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_mrg32k3a.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of MRG32k3a pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -94,16 +94,22 @@ mrg32k3a_step_double(uint4* seed1,uint4* seed2)
 {
     hgpu_double rnd_double;
     float rnd1, rnd2;
-    bool flag = true;
     mrg32k3a_step(seed1,seed2,&rnd1);
+
+#ifndef PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         mrg32k3a_step(seed1,seed2,&rnd2);
         rnd_double = hgpu_float_to_double(rnd1,rnd2,MRG32k3a_min,MRG32k3a_max,MRG32k3a_k);
+
+#ifndef PRNG_SKIP_CHECK
         if ((rnd_double>=MRG32k3a_left) && (rnd_double<MRG32k3a_right))
             flag = false;
         else
             rnd1 = rnd2;
     }
+#endif
     return rnd_double;
 }
 #endif
