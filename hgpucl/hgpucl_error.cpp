@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpucl_error.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           Interface for OpenCL AMD APP & nVidia SDK environment
@@ -10,7 +10,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -125,4 +125,3 @@ HGPU_GPU_error_note(int error_code,const char* error_message){
     if (error_code>0) HGPU_error_message(error_code,error_message);
     HGPU_error_note(error_code,error_message);
 }
-
