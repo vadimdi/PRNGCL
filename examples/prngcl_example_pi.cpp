@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_example_pi.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           Pseudo-random number generators for HGPU package
