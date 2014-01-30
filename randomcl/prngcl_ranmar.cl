@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_ranmar.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of RANMAR pseudo-random number generator
@@ -20,7 +20,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -138,11 +138,15 @@ rm_step_double(__global float4 * seedtable,uint* RM_I97,uint* RM_J97,float* uniz
 {
     hgpu_double4 result;
     float4 rnd1, rnd2;
-    bool flag = true;
     rnd1 = rm_step(seedtable,RM_I97,RM_J97,uniz);
+#ifndef PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         rnd2 = rm_step(seedtable,RM_I97,RM_J97,uniz);
         result = hgpu_float4_to_double4(rnd1,rnd2,RM_min,RM_max,RM_k);
+
+#ifndef PRNG_SKIP_CHECK
         if ((result.x>=RM_left) && (result.x<RM_right) &&
             (result.y>=RM_left) && (result.y<RM_right) &&
             (result.z>=RM_left) && (result.z<RM_right) &&
@@ -151,7 +155,7 @@ rm_step_double(__global float4 * seedtable,uint* RM_I97,uint* RM_J97,float* uniz
         else
             rnd1 = rnd2;
     }
-
+#endif
     return result;
 }
 #endif
@@ -189,4 +193,3 @@ ranmar(__global float4 * seedtable,__global hgpu_float4 * prns, const uint sampl
 
 
 #endif
-  
