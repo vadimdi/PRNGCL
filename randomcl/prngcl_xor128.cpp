@@ -1,5 +1,5 @@
 /******************************************************************************
- * @file     prngcl_xor128.cl
+ * @file     prngcl_xor128.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
  * @version  1.1.1
  *
