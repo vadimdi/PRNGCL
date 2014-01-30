@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_ranecu.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of RANECU pseudo-random number generator
@@ -20,7 +20,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -110,11 +110,17 @@ ranecu_step_double(uint4* seed1,uint4* seed2)
     uint4 rnd1, rnd2;
     uint4 sed1 = (*seed1);
     uint4 sed2 = (*seed2);
-    bool flag = true;
     ranecu_step(&sed1,&sed2,&rnd1);
+
+#ifndef PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
+
         ranecu_step(&sed1,&sed2,&rnd2);
         result = hgpu_uint4_to_double4(rnd1,rnd2,RANECU_min,RANECU_max,RANECU_k);
+
+#ifndef PRNG_SKIP_CHECK
         if ((result.x>=RANECU_left) && (result.x<RANECU_right) &&
             (result.y>=RANECU_left) && (result.y<RANECU_right) &&
             (result.z>=RANECU_left) && (result.z<RANECU_right) &&
@@ -123,6 +129,7 @@ ranecu_step_double(uint4* seed1,uint4* seed2)
         else
             rnd1 = rnd2;
     }
+#endif
     (*seed1) = sed1;
     (*seed2) = sed2;
     return result;
@@ -163,4 +170,3 @@ ranecu(__global uint4* seed_table,
 }
 
 #endif
- 
