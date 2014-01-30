@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_prng_test.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           Pseudo-random number generators for HGPU package
@@ -10,7 +10,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -39,6 +39,8 @@
 #ifndef HGPU_PRNG_TEST_H
 #define HGPU_PRNG_TEST_H
 
-                     unsigned int   HGPU_PRNG_tests(HGPU_GPU_context* context);
-                             void   HGPU_PRNG_benchmarks(HGPU_GPU_context* context);
+#include "../include/hgpu_parameters.h"
+
+                     unsigned int   HGPU_PRNG_tests(HGPU_GPU_context* context,HGPU_parameter** parameters);
+                             void   HGPU_PRNG_benchmarks(HGPU_GPU_context* context,HGPU_parameter** parameters);
 #endif
