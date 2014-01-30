@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_prng.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           Pseudo-random number generators for HGPU package
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -36,6 +36,8 @@
  *****************************************************************************/
 
 #include "hgpu_prng.h"
+
+//#define HGPU_PRNG_SKIP_CHECK    // skip uniformity checking in double precision
 
 #define HGPU_PRNG_MAX_descriptions   32
 #define HGPU_PRNG_MAX_name_length   256
@@ -87,10 +89,13 @@ HGPU_PRNG_double_from_uint(unsigned int rnd1,unsigned int rnd2,unsigned int rnd_
 double
 HGPU_PRNG_double_from_float(float rnd1,float rnd2,double rnd_min,double rnd_max,double k){
     double a1 = (rnd_max - rnd_min);
-    double a2 = k * a1;
-    double a3 = a1 * (1.0 - k);
-    double a4 = -(rnd_min / a1 + rnd_max) * k - rnd_min;
-    return (trunc((rnd1 - rnd_min) / a2) + rnd2 / a1) * k / a3 + a4 / a3;
+    double a2 = trunc((a1-2.0*k) / k) + a1;
+    return (trunc((rnd1-rnd_min-k) / k) + rnd2 - rnd_min) * (1.0-k*k) / a2;
+//    double a1 = (rnd_max - rnd_min);
+//    double a2 = k * a1;
+//    double a3 = a1 * (1.0 - k);
+//    double a4 = -(rnd_min / a1 + rnd_max) * k - rnd_min;
+//    return (trunc((rnd1 - rnd_min) / a2) + rnd2 / a1) * k / a3 + a4 / a3;
 }
 
 double
@@ -368,6 +373,9 @@ HGPU_PRNG_init(HGPU_GPU_context* context,HGPU_PRNG* prng){
     char options[HGPU_GPU_MAX_OPTIONS_LENGTH];
     int  j2 = sprintf_s(options,HGPU_GPU_MAX_OPTIONS_LENGTH,"-I %s%s",HGPU_io_path_root,PRNGCL_ROOT_PATH);
     if (prng->parameters->precision==HGPU_precision_double) j2 += sprintf_s(options+j2,HGPU_GPU_MAX_OPTIONS_LENGTH-j2," -D PRNG_PRECISION=2");
+#ifdef HGPU_PRNG_SKIP_CHECK
+    j2 += sprintf_s(options+j2,HGPU_GPU_MAX_OPTIONS_LENGTH-j2," -D PRNG_SKIP_CHECK");
+#endif
 
     // additional particular options of PRNG
     // include additional options for opencl
@@ -435,12 +443,16 @@ double
 HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right){
     double result = 0.0;
     double prng_k = prng->prng->k_value;
-    bool flag = true;
     float rnd1, rnd2;
     rnd1 = (float) (prng->prng->CPU_produce_one_double)(prng->state);
+#ifndef HGPU_PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         rnd2 = (float) (prng->prng->CPU_produce_one_double)(prng->state);
         result = HGPU_PRNG_double_from_float(rnd1,rnd2,prng->prng->min_double_value,prng->prng->max_double_value,prng_k);
+
+#ifndef HGPU_PRNG_SKIP_CHECK
         if ((result>=prng_left) && (result<prng_right))
             flag = false;
         else {
@@ -449,6 +461,7 @@ HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double p
             rnd1 = rnd2;
         }
     }
+#endif
     return result;
 }
 
@@ -456,12 +469,16 @@ double
 HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right){
     double result = 0.0;
     double prng_k = prng->prng->k_value;
-    bool flag = true;
     unsigned int rnd1, rnd2;
     rnd1 = (prng->prng->CPU_produce_one_uint)(prng->state);
+#ifndef HGPU_PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         rnd2 = (prng->prng->CPU_produce_one_uint)(prng->state);
         result = HGPU_PRNG_double_from_uint(rnd1,rnd2,prng->prng->min_uint_value,prng->prng->max_uint_value,prng_k);
+
+#ifndef HGPU_PRNG_SKIP_CHECK
         if ((result>=prng_left) && (result<prng_right))
             flag = false;
         else {
@@ -470,6 +487,7 @@ HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop,double pr
             rnd1 = rnd2;
         }
     }
+#endif
     return result;
 }
 
@@ -684,12 +702,18 @@ HGPU_PRNG_write_output_text(HGPU_GPU_context* context,HGPU_PRNG* prng,const char
 }
 
 unsigned int
-HGPU_PRNG_test(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_descr,unsigned int randseries,
+HGPU_PRNG_test(HGPU_GPU_context* context,HGPU_parameter** parameters,const HGPU_PRNG_description* prng_descr,unsigned int randseries,
                HGPU_precision precision,unsigned int number,double test_value){
     unsigned int result = 0;
+
+    HGPU_PRNG_set_default_precision(precision);
+    HGPU_PRNG_set_default_randseries(randseries);
+    HGPU_PRNG_set_default_samples(number);
+
+    HGPU_parameter* parameter_instances  = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PRNG_INSTANCES);
+    if (parameter_instances && (parameter_instances->value_text)) HGPU_PRNG_set_default_instances(parameter_instances->value_integer);
+
     HGPU_PRNG* prng = HGPU_PRNG_new(prng_descr);
-    HGPU_PRNG_set_precision(prng,precision);
-    HGPU_PRNG_set_samples(prng,number);
     if (randseries) HGPU_PRNG_set_randseries(prng,randseries);
     double* CPU_results = (double*) calloc(number+1,sizeof(double));
     if (!CPU_results)
@@ -741,23 +765,40 @@ HGPU_PRNG_test(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_descr
 
 
 double
-HGPU_PRNG_benchmark(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_descr,HGPU_precision precision){
+HGPU_PRNG_benchmark(HGPU_GPU_context* context,HGPU_parameter** parameters,const HGPU_PRNG_description* prng_descr,HGPU_precision precision){
     double result = 0.0;
-    double duration = HGPU_PRNG_TEST_MAX_DURATION;
-    HGPU_PRNG* prng = HGPU_PRNG_new(prng_descr);
-    HGPU_PRNG_set_precision(prng,precision);
-    HGPU_PRNG_set_randseries(prng,1);
+    unsigned int max_cycles = HGPU_PRNG_TEST_MAX_PASSES; // HGPU_PRNG_TEST_MAX_PASSES=test maximum number of passes
+    double duration = HGPU_PRNG_TEST_MAX_DURATION;       // HGPU_PRNG_TEST_DURATION  =test duration in seconds
 
-        prng->parameters->instances = HGPU_GPU_device_get_max_memory_width(context->device);
-        unsigned int output_type_vals = 4; // HGPU_PRNG_get_output_type_values(prng);
+    HGPU_PRNG_set_default_precision(precision);
+    HGPU_PRNG_set_default_randseries(1);
+
+    HGPU_parameter* parameter_samples    = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PRNG_SAMPLES);
+    HGPU_parameter* parameter_instances  = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PRNG_INSTANCES);
+    HGPU_parameter* parameter_cycles     = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PRNG_TEST_MAX_PASSES);
+    HGPU_parameter* parameter_duration   = HGPU_parameters_get_by_name(parameters,(char*) HGPU_PARAMETER_PRNG_TEST_MAX_DURATION);
+
+    if (parameter_cycles   && (parameter_cycles->value_text))   max_cycles = parameter_cycles->value_integer;
+    if (parameter_duration && (parameter_duration->value_text)) duration   = parameter_duration->value_double;
+
+    HGPU_PRNG_set_default_with_parameters(parameters);
+    HGPU_PRNG* prng = HGPU_PRNG_new(prng_descr);
+
+        unsigned int instances = HGPU_GPU_device_get_max_memory_width(context->device);
+        if (parameter_instances && (parameter_instances->value_text)) instances = parameter_instances->value_integer;
+        unsigned int output_type_vals = 4;
         unsigned long int alloc_memory = HGPU_GPU_device_get_max_allocation_memory(context->device);
         unsigned int elem_size = (precision==HGPU_precision_single) ? sizeof(cl_float) : sizeof(cl_double);
-        
 
-        unsigned int samples = HGPU_convert_round_to_power_2(((alloc_memory >> 1) - prng->prng->state_size * prng->parameters->instances) / 
-                               (elem_size * output_type_vals * prng->parameters->instances));
+        unsigned int samples = HGPU_convert_round_to_power_2(((alloc_memory >> 1) - prng->prng->state_size * instances) / 
+                               (elem_size * output_type_vals * instances));
         unsigned int samples_best = samples;
+
+        if (parameter_samples && (parameter_samples->value_text))     samples   = parameter_samples->value_integer;
+
+        HGPU_PRNG_set_instances(prng,instances);
         HGPU_PRNG_set_samples(prng,samples);
+
         unsigned int prng_id = HGPU_PRNG_init(context,prng);
 // context->debug_flags.max_workgroup_size = 256;
 // HGPU_GPU_context_kernel_limit_max_workgroup_size(context,prng_id);
@@ -767,17 +808,17 @@ HGPU_PRNG_benchmark(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_
         while (samples) {
             HGPU_PRNG_change_samples(context,prng,samples);
 
-            int cycles = 0;
+            unsigned int cycles = 0;
             double time_elapsed = 0.0;
             HGPU_timer time_start = HGPU_timer_start();
-            while((time_elapsed<duration) && (cycles<HGPU_PRNG_TEST_MAX_PASSES)) {  // HGPU_PRNG_TEST_DURATION=test duration in seconds
+            while((time_elapsed<duration) && (cycles<max_cycles)) {  
                 HGPU_PRNG_produce(context,prng_id);
                 cycles++;
-                time_elapsed += HGPU_timer_get(time_start);
+                time_elapsed = HGPU_timer_get(time_start);
             }
 
             double prns = ((double) cycles) * ((double) prng->parameters->samples) * ((double) prng->parameters->instances) * ((double) output_type_vals);
-            printf("%e samples (%u - %u cycles - %u instances) per %e seconds (%u)\n",prns,samples,cycles,prng->parameters->instances,time_elapsed,(unsigned int) CLOCKS_PER_SEC);
+            double productivity = 0.0;
 
             HGPU_timer_deviation elapsed_time = HGPU_timer_deviation_default;
             HGPU_GPU_kernel* kernel = HGPU_GPU_kernel_get_by_index(context->kernel,prng_id);
@@ -788,18 +829,21 @@ HGPU_PRNG_benchmark(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_
                     e_time = elapsed_time.mean - last_start_et;
                 } else
                     e_time = HGPU_convert_s_to_ns(time_elapsed);
-                double productivity = HGPU_convert_B_to_GBS(prns,e_time);
+                productivity = HGPU_convert_B_to_GBS(prns,e_time);
                 if (result<productivity) {
                     result = productivity;
                     samples_best = samples;
                 }
                 last_start_et = elapsed_time.mean;
             }
+            printf("Perf: %1.2e (Gsamples/sec) - %e PRNs (%u samples - %u cycles - %u instances) per %e seconds\n",productivity,prns,samples,cycles,prng->parameters->instances,time_elapsed);
+
             samples = samples >> 1;
         }
 
     printf("\nPRNG: %s\n",prng->prng->name);
     printf("Precision: %s\n",HGPU_convert_precision_to_str(prng->parameters->precision));
+    printf("Instances: %u\n",prng->parameters->instances);
     printf("Best productivity (Gsamples/sec): %e\n",result);
     printf("Best samples: %u\n",samples_best);
     HGPU_PRNG_and_buffers_free(context,prng);
