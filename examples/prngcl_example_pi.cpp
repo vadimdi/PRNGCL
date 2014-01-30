@@ -56,18 +56,24 @@ HGPU_GPU_example_pi(int argc, char** argv){
 
     HGPU_GPU_context_print_used_hardware(context); // print using hardware
 
-    const HGPU_PRNG_description* prng_descr = HGPU_PRNG_MRG32K3A;    // PRNG to be used
+    const HGPU_PRNG_description* prng_descr = NULL;
           HGPU_precision         precision  = HGPU_precision_single; // precision to be used
           unsigned int           randseries = 0;                     // serial number of sequence (0=random, other=determined)
           unsigned int           instances  = HGPU_GPU_device_get_max_memory_width(context->device); // number of PRNG instances
           unsigned int           samples_per_stream = 1024;          // number of PRNs per stream
           unsigned int           passes     = 1000;                  // number of passes for pi calculation
 
+    HGPU_PRNG_set_default_precision(precision);        // set precision
+    HGPU_PRNG_set_default_randseries(randseries);      // set randseries
+    HGPU_PRNG_set_default_instances(instances);        // set instances
+    HGPU_PRNG_set_default_samples(samples_per_stream); // set samples (if instances=0 then [autoselection] and samples should be whole number of desired PRNs)
+
+    HGPU_parameter** parameters = HGPU_parameters_get_all(argc,argv);
+    HGPU_PRNG_set_default_with_parameters(parameters);
+//    HGPU_PRNG_default = HGPU_PRNG_description_get_with_name("MRG32K3A"); // PRNG to be used
+    prng_descr = HGPU_PRNG_description_get_with_parameters(parameters);
+    
     HGPU_PRNG* prng = HGPU_PRNG_new(prng_descr); // create new PRNG instance
-    HGPU_PRNG_set_precision(prng,precision);     // set precision
-    HGPU_PRNG_set_randseries(prng,randseries);   // set randseries
-    HGPU_PRNG_set_instances(prng,instances);        // set instances
-    HGPU_PRNG_set_samples(prng,samples_per_stream); // set samples (if instances=0 then [autoselection] and samples should be whole number of desired PRNs)
 
     unsigned int prng_id = HGPU_PRNG_init(context,prng); // PRNG initialization
 
@@ -111,7 +117,8 @@ HGPU_GPU_example_pi(int argc, char** argv){
         result += results_ptr[i];
 
     double prns_used = (4.0*((double) passes)*((double) prng->parameters->instances)*((double) prng->parameters->samples));
-        printf("\nPRNG instances: %u\n",prng->parameters->instances);
+        printf("\nPRNG: %s\n",prng->prng->name);
+        printf("PRNG instances: %u\n",prng->parameters->instances);
         printf("PRNG samples:   %u\n",prng->parameters->samples);
         printf("passes:         %u\n",passes);
         printf("PRNs used:      %e\n\n",prns_used);
