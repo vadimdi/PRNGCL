@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpucl_constants.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           Interface for OpenCL AMD APP & nVidia SDK environment
@@ -10,7 +10,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -41,7 +41,7 @@
 
 #define HGPUCL_VERSION_MAJOR 1
 #define HGPUCL_VERSION_MINOR 0
-#define HGPUCL_VERSION_MICRO 1
+#define HGPUCL_VERSION_MICRO 2
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -124,7 +124,10 @@
 
 #define HGPU_FILENAME_MAX   FILENAME_MAX // MIN(FILENAME_MAX,4096)
 
-
+// SAFE_LINUX_TIMER = turn on safe timer for linux (timer counts only CPU time, not real time)
+#ifndef _WIN32
+#define SAFE_LINUX_TIMER
+#endif
 
 
 // autoselect device from list by memory, not by number of compute units
