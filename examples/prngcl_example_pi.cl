@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_example_pi.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           EXAMPLE: OpenCL implementation of MRG32k3a pseudo-random number generator
