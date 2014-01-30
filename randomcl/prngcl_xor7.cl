@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_xor7.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of seven-XOR pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -80,18 +80,24 @@ xor7_step_double(uint4* seed1,uint4* seed2)
     uint rnd1, rnd2;
     uint4 sed1 = (*seed1);
     uint4 sed2 = (*seed2);
-    bool flag = true;
     xor7_step(&sed1,&sed2);
     rnd1 = sed2.w;
+
+#ifndef PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         xor7_step(&sed1,&sed2);
         rnd2 = sed2.w;
         result = hgpu_uint_to_double(rnd1,rnd2,XOR7_min,XOR7_max,XOR7_k);
+
+#ifndef PRNG_SKIP_CHECK
         if ((result>=XOR7_left) && (result<XOR7_right))
             flag = false;
         else
             rnd1 = rnd2;
     }
+#endif
     (*seed1) = sed1;
     (*seed2) = sed2;
     return result;
