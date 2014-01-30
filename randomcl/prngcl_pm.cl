@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_pm.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of Park-Miller pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -97,21 +97,29 @@ pm(__global uint4* seed_table,
     uint4 seed = seed_table[GID];
     for (uint i = 0; i < N; i++) {
 #ifdef PRECISION_DOUBLE // if double precision is defined
+        pm_step(&seed);
+        rnd1 = seed;
 
+#ifndef PRNG_SKIP_CHECK
         bool flag = true;
         while (flag) {
+#endif
             pm_step(&seed);
-            rnd1 = seed;
+            rnd2 = seed;
+            result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
+
+#ifndef PRNG_SKIP_CHECK
             if ((rnd1.x>PM_min) && (rnd1.x<PM_max) &&
                 (rnd1.y>PM_min) && (rnd1.y<PM_max) &&
                 (rnd1.z>PM_min) && (rnd1.z<PM_max) &&
                 (rnd1.w>PM_min) && (rnd1.w<PM_max)) {
-                pm_step(&seed);
-                rnd2 = seed;
-                result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
                 flag = false;
             }
+            else
+                rnd1 = rnd2;
         }
+#endif
+
         randoms[giddst] = result;
 #else
         pm_step(&seed);
