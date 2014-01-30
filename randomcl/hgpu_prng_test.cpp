@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_prng_test.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           Pseudo-random number generators for HGPU package
@@ -10,7 +10,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -39,30 +39,31 @@
 #include "hgpu_prng.h"
 
 unsigned int
-HGPU_PRNG_tests(HGPU_GPU_context* context){
+HGPU_PRNG_tests(HGPU_GPU_context* context,HGPU_parameter** parameters){
     unsigned int result = 0;
 
     // Toy PRNGs:
-    result += HGPU_PRNG_test(context,HGPU_PRNG_PM,      1,HGPU_precision_single,10000,0.8641089363322169);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_CONSTANT,1,HGPU_precision_single,10000,0.0234896258916706);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_PM,      1,HGPU_precision_single,10000,0.8641089363322169);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_CONSTANT,1,HGPU_precision_single,10000,0.0234896258916706);
 
-    result += HGPU_PRNG_test(context,HGPU_PRNG_XOR128,  1,HGPU_precision_single,1000000,0.6839658189564943);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_XOR7,    1,HGPU_precision_single,1000000,0.09432704793289304);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANECU,  1,HGPU_precision_single,1000000,0.1810733857564628);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANMAR,  1,HGPU_precision_single,1000000,0.9911311864852905);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANLUX,  1,HGPU_precision_single,1000000,0.42132478952407837);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_MRG32K3A,1,HGPU_precision_single,1000000,0.8171486894057429);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_XOR128,  1,HGPU_precision_single,1000000,0.6839658189564943);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_XOR7,    1,HGPU_precision_single,1000000,0.09432704793289304);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANECU,  1,HGPU_precision_single,1000000,0.1810733857564628);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANMAR,  1,HGPU_precision_single,1000000,0.9911311864852905);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANLUX,  1,HGPU_precision_single,1000000,0.42132478952407837);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_MRG32K3A,1,HGPU_precision_single,1000000,0.8171486894057429);
 
 
     // Toy PRNGs:
-    result += HGPU_PRNG_test(context,HGPU_PRNG_CONSTANT,1,HGPU_precision_double,1000000,0.023489625891670585);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_PM,      1,HGPU_precision_double,1000000,0.330385444271241);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_CONSTANT,1,HGPU_precision_double,1000000,0.023489625891670585);
 
-    result += HGPU_PRNG_test(context,HGPU_PRNG_XOR128,  1,HGPU_precision_double,1000000,0.75871549689209505);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_XOR7,    1,HGPU_precision_double,1000000,0.75934357677468545);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANECU,  1,HGPU_precision_double,1000000,0.31995889215386432);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANMAR,  1,HGPU_precision_double,1000000,0.6419413344753124);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_RANLUX,  1,HGPU_precision_double,1000000,0.9564072613718381);
-    result += HGPU_PRNG_test(context,HGPU_PRNG_MRG32K3A,1,HGPU_precision_double,1000000,0.00755252070810589);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_XOR128,  1,HGPU_precision_double,1000000,0.75871549689209505);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_XOR7,    1,HGPU_precision_double,1000000,0.75934357677468545);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANECU,  1,HGPU_precision_double,1000000,0.31995889215386432);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANMAR,  1,HGPU_precision_double,1000000,0.6419413344753121);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANLUX,  1,HGPU_precision_double,1000000,0.95640726137184218);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_MRG32K3A,1,HGPU_precision_double,1000000,0.0075525209409365449);
 
     printf(" **************************************************\n");
     if (result)
@@ -76,25 +77,33 @@ HGPU_PRNG_tests(HGPU_GPU_context* context){
 
 
 void
-HGPU_PRNG_benchmarks(HGPU_GPU_context* context){
+HGPU_PRNG_benchmarks(HGPU_GPU_context* context,HGPU_parameter** parameters){
     double result = 0.0;
 
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_CONSTANT,HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_PM,      HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_XOR128,  HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_XOR7,    HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANECU,  HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANMAR,  HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANLUX,  HGPU_precision_single);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_MRG32K3A,HGPU_precision_single);
+    char* timestamp = HGPU_timer_get_current_datetime();
+        printf("\nStarted at: %s (%u tics/sec)\n\n",timestamp,(unsigned int) CLOCKS_PER_SEC);
+    free(timestamp);
 
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_CONSTANT,HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_PM,      HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_XOR128,  HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_XOR7,    HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANECU,  HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANMAR,  HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_RANLUX,  HGPU_precision_double);
-    result += HGPU_PRNG_benchmark(context,HGPU_PRNG_MRG32K3A,HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_CONSTANT,HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_PM,      HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_XOR128,  HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_XOR7,    HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANECU,  HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANMAR,  HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANLUX,  HGPU_precision_single);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_MRG32K3A,HGPU_precision_single);
+
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_CONSTANT,HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_PM,      HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_XOR128,  HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_XOR7,    HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANECU,  HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANMAR,  HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_RANLUX,  HGPU_precision_double);
+    result += HGPU_PRNG_benchmark(context,parameters,HGPU_PRNG_MRG32K3A,HGPU_precision_double);
+
+    timestamp = HGPU_timer_get_current_datetime();
+        printf("\nFinished at: %s\n",timestamp);
+    free(timestamp);
 
 }
