@@ -62,3 +62,4 @@ calculate_pi(__global hgpu_float4* randoms,
 
 
 #endif
+
