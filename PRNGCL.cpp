@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     PRNGCL.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           Library of pseudo-random number generators for Monte Carlo simulations on GPUs
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -36,11 +36,13 @@
  *****************************************************************************/
 
 #include "PRNGCL.h"
-
+#include "examples/prngcl_example_pi.h"
 
 int main(int argc, char ** argv)
 {
     HGPU_GPU_test(argc,argv);
+
+//    HGPU_GPU_example_pi(argc,argv);
 
     return 0;
 }
