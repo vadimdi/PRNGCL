@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_xor128.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of XOR128 pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013, 2014 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -79,18 +79,23 @@ xor128_step_double(uint4* seed)
     hgpu_double result;
     uint rnd1, rnd2;
     uint4 sed = (*seed);
-    bool flag = true;
     sed = xor128_step(sed);
     rnd1 = sed.w;
+#ifndef PRNG_SKIP_CHECK
+    bool flag = true;
     while (flag) {
+#endif
         sed = xor128_step(sed);
         rnd2 = sed.w;
         result = hgpu_uint_to_double(rnd1,rnd2,XOR128_min,XOR128_max,XOR128_k);
+
+#ifndef PRNG_SKIP_CHECK
         if ((result>=XOR128_left) && (result<XOR128_right))
             flag = false;
         else
             rnd1 = rnd2;
     }
+#endif
     (*seed) = sed;
     return result;
 }
