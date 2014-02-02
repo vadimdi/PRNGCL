@@ -53,8 +53,6 @@
 #define XOR7_min_FP (1.0/4294967296.0)
 #define XOR7_max_FP (4294967295.0/4294967296.0)
 #define XOR7_k      (2.3283064365386962890625E-10) // 1/(2^32-1)
-#define XOR7_left   (XOR7_min_FP+XOR7_k*XOR7_max_FP)
-#define XOR7_right  (XOR7_max_FP+XOR7_k*XOR7_min_FP)
 
 __attribute__((always_inline)) void
 xor7_step(uint4* seed1,uint4* seed2)
@@ -77,27 +75,21 @@ __attribute__((always_inline)) hgpu_double
 xor7_step_double(uint4* seed1,uint4* seed2)
 {
     hgpu_double result;
-    uint rnd1, rnd2;
+    uint rnd1 = 0;
+    uint rnd2 = 0;
     uint4 sed1 = (*seed1);
     uint4 sed2 = (*seed2);
-    xor7_step(&sed1,&sed2);
-    rnd1 = sed2.w;
-
 #ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
+    while ((rnd1 <= XOR7_min) || (rnd1 >= XOR7_max))
 #endif
+    {
         xor7_step(&sed1,&sed2);
-        rnd2 = sed2.w;
-        result = hgpu_uint_to_double(rnd1,rnd2,XOR7_min,XOR7_max,XOR7_k);
-
-#ifndef PRNG_SKIP_CHECK
-        if ((result>=XOR7_left) && (result<XOR7_right))
-            flag = false;
-        else
-            rnd1 = rnd2;
+        rnd1 = sed2.w;
     }
-#endif
+    xor7_step(&sed1,&sed2);
+    rnd2 = sed2.w;
+
+    result = hgpu_uint_to_double(rnd1,rnd2,XOR7_min,XOR7_max,XOR7_k);
     (*seed1) = sed1;
     (*seed2) = sed2;
     return result;
@@ -114,7 +106,7 @@ xor7(__global uint4* seed_table,
     hgpu_double4 result;
 #else
     float4 result;
-    float4 normal = (float4) XOR7_m_FP;
+    float4 m = (float4) XOR7_m_FP;
 #endif
     uint4 seed1 = seed_table[GID];
     uint4 seed2 = seed_table[GID + GID_SIZE];
@@ -134,7 +126,7 @@ xor7(__global uint4* seed_table,
             result.z = (float) seed2.w;
         xor7_step(&seed1,&seed2);
             result.w = (float) seed2.w;
-        randoms[giddst] = result / normal;
+        randoms[giddst] = result / m;
 #endif
         giddst += GID_SIZE;
     }
