@@ -62,7 +62,7 @@ HGPU_PRNG_tests(HGPU_GPU_context* context,HGPU_parameter** parameters){
     result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_XOR7,    1,HGPU_precision_double,1000000,0.75934357677468545);
     result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANECU,  1,HGPU_precision_double,1000000,0.31995889215386432);
     result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANMAR,  1,HGPU_precision_double,1000000,0.6419413344753121);
-    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANLUX,  1,HGPU_precision_double,1000000,0.95640726137184218);
+    result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_RANLUX,  1,HGPU_precision_double,1000000,0.16665428407858204);
     result += HGPU_PRNG_test(context,parameters,HGPU_PRNG_MRG32K3A,1,HGPU_precision_double,1000000,0.0075525209409365449);
 
     printf(" **************************************************\n");
