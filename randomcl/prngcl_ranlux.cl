@@ -55,9 +55,6 @@
 #define RL_max    (16777215.0/16777216.0)
 #define RL_k      (5.9604644775390625E-8) // 1/2^24
 
-#define RL_left   (RL_min+RL_k*RL_max)
-#define RL_right  (RL_max+RL_k*RL_min)
-
 #define RL_zero     0.0f
 #define RL_icons    2147483563
 #define RL_itwo24   16777216 // 1<<24
@@ -504,36 +501,27 @@ rl_step_double(float4* RL_seed0,float4* RL_seed1,float4* RL_seed2,float4* RL_see
 {
     hgpu_double4 result;
     hgpu_double2 rnd_double;
-    float4 rnd1,rnd2;
+    float4 rnd1 = (float4) 0.0;
+    float4 rnd2 = (float4) 0.0;
 #ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
+        while ((rnd1.x <= RL_min) || (rnd1.x >= RL_max) ||
+               (rnd1.z <= RL_min) || (rnd1.z >= RL_max)
+              )
 #endif
-        rnd1 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
+            rnd1 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
         rnd_double = hgpu_float4_to_double2(rnd1,RL_min,RL_max,RL_k);
+        result.x = rnd_double.x;
+        result.y = rnd_double.y;
 
 #ifndef PRNG_SKIP_CHECK
-        if ((rnd_double.x>=RL_left) && (rnd_double.x<RL_right) &&
-            (rnd_double.y>=RL_left) && (rnd_double.y<RL_right)) flag = false;
-    }
+        while ((rnd2.x <= RL_min) || (rnd2.x >= RL_max) ||
+               (rnd2.z <= RL_min) || (rnd2.z >= RL_max)
+              )
 #endif
-    result.x = rnd_double.x;
-    result.y = rnd_double.y;
-
-#ifndef PRNG_SKIP_CHECK
-    flag = true;
-    while (flag) {
-#endif
-        rnd2 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
+            rnd2 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
         rnd_double = hgpu_float4_to_double2(rnd2,RL_min,RL_max,RL_k);
-
-#ifndef PRNG_SKIP_CHECK
-        if ((rnd_double.x>=RL_left) && (rnd_double.x<RL_right) &&
-            (rnd_double.y>=RL_left) && (rnd_double.y<RL_right)) flag = false;
-    }
-#endif
-    result.z = rnd_double.x;
-    result.w = rnd_double.y;
+        result.z = rnd_double.x;
+        result.w = rnd_double.y;
 
     return result;
 }
