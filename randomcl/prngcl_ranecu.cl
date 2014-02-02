@@ -58,9 +58,6 @@
 #define RANECU_max_FP (2147483647.0/2147483648.0)
 #define RANECU_k      (4.656612873077392578125E-10) // 1/2^31
 
-#define RANECU_left   (RANECU_min_FP+RANECU_k*RANECU_max_FP)
-#define RANECU_right  (RANECU_max_FP+RANECU_k*RANECU_min_FP)
-
 #define RANECU_twom31   (2147483648.0f)
 #define RANECU_icons1   2147483563
 #define RANECU_icons2   2147483399
@@ -107,29 +104,22 @@ __attribute__((always_inline)) hgpu_double4
 ranecu_step_double(uint4* seed1,uint4* seed2)
 {
     hgpu_double4 result;
-    uint4 rnd1, rnd2;
+    uint4 rnd1 = (uint4) 0;
+    uint4 rnd2;
     uint4 sed1 = (*seed1);
     uint4 sed2 = (*seed2);
-    ranecu_step(&sed1,&sed2,&rnd1);
 
 #ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
+    while ((rnd1.x <= RANECU_min) || (rnd1.x >= RANECU_max) ||
+           (rnd1.y <= RANECU_min) || (rnd1.y >= RANECU_max) ||
+           (rnd1.z <= RANECU_min) || (rnd1.z >= RANECU_max) ||
+           (rnd1.w <= RANECU_min) || (rnd1.w >= RANECU_max)
+          )
 #endif
+        ranecu_step(&sed1,&sed2,&rnd1);
+    ranecu_step(&sed1,&sed2,&rnd2);
 
-        ranecu_step(&sed1,&sed2,&rnd2);
-        result = hgpu_uint4_to_double4(rnd1,rnd2,RANECU_min,RANECU_max,RANECU_k);
-
-#ifndef PRNG_SKIP_CHECK
-        if ((result.x>=RANECU_left) && (result.x<RANECU_right) &&
-            (result.y>=RANECU_left) && (result.y<RANECU_right) &&
-            (result.z>=RANECU_left) && (result.z<RANECU_right) &&
-            (result.w>=RANECU_left) && (result.w<RANECU_right))
-            flag = false;
-        else
-            rnd1 = rnd2;
-    }
-#endif
+    result = hgpu_uint4_to_double4(rnd1,rnd2,RANECU_min,RANECU_max,RANECU_k);
     (*seed1) = sed1;
     (*seed2) = sed2;
     return result;
@@ -152,7 +142,7 @@ ranecu(__global uint4* seed_table,
     hgpu_double4 result;
 #else
     uint4 result;
-    float4 normal = (float4) RANECU_twom31;
+    float4 m = (float4) RANECU_twom31;
 #endif
 
     for (uint i = 0; i < N; i++) {
@@ -161,7 +151,7 @@ ranecu(__global uint4* seed_table,
         randoms[giddst] = result;
 #else
         ranecu_step(&seed1,&seed2,&result);
-        randoms[giddst] = hgpu_uint4_to_float4(result) / normal;
+        randoms[giddst] = hgpu_uint4_to_float4(result) / m;
 #endif
         giddst += GID_SIZE;
     }
