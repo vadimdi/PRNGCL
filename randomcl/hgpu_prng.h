@@ -153,10 +153,10 @@ extern const HGPU_PRNG_description* HGPU_PRNG_default;
                         HGPU_PRNG*  HGPU_PRNG_new_with_parameters(HGPU_parameter** parameters);
 
                            double   HGPU_PRNG_produce_CPU_one(HGPU_PRNG* prng);
-                           double   HGPU_PRNG_produce_CPU_float_one( HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
-                           double   HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
-                           double   HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
-                           double   HGPU_PRNG_produce_CPU_uintN_one( HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
+                           double   HGPU_PRNG_produce_CPU_float_one( HGPU_PRNG* prng,unsigned int prns_drop);
+                           double   HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int prns_drop);
+                           double   HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop);
+                           double   HGPU_PRNG_produce_CPU_uintN_one( HGPU_PRNG* prng,unsigned int prns_drop);
 
                              void   HGPU_PRNG_produce_CPU(HGPU_PRNG* prng,double** randoms_CPU,unsigned int number_of_prns);
                              void   HGPU_PRNG_produce(HGPU_GPU_context* context,unsigned int prng_kernel_id);
