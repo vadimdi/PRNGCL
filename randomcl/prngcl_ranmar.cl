@@ -55,9 +55,6 @@
 #define RM_max    (16777215.0/16777216.0)
 #define RM_k      (5.9604644775390625E-8) // 1/2^24                   
 
-#define RM_left   (RM_min+RM_k*RM_max)
-#define RM_right  (RM_max+RM_k*RM_min)
-
 #define RM_CD (7654321.0f / 16777216.0f)
 #define RM_CM (16777213.0f /16777216.0f)
 
@@ -137,25 +134,19 @@ __attribute__((always_inline)) hgpu_double4
 rm_step_double(__global float4 * seedtable,uint* RM_I97,uint* RM_J97,float* uniz)
 {
     hgpu_double4 result;
-    float4 rnd1, rnd2;
-    rnd1 = rm_step(seedtable,RM_I97,RM_J97,uniz);
+    float4 rnd1 = 0.0;
+    float4 rnd2;
 #ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
+    while ((rnd1.x <= RM_min) || (rnd1.x >= RM_max) ||
+           (rnd1.y <= RM_min) || (rnd1.y >= RM_max) ||
+           (rnd1.z <= RM_min) || (rnd1.z >= RM_max) ||
+           (rnd1.w <= RM_min) || (rnd1.w >= RM_max)
+          )
 #endif
-        rnd2 = rm_step(seedtable,RM_I97,RM_J97,uniz);
-        result = hgpu_float4_to_double4(rnd1,rnd2,RM_min,RM_max,RM_k);
+        rnd1 = rm_step(seedtable,RM_I97,RM_J97,uniz);
+    rnd2 = rm_step(seedtable,RM_I97,RM_J97,uniz);
 
-#ifndef PRNG_SKIP_CHECK
-        if ((result.x>=RM_left) && (result.x<RM_right) &&
-            (result.y>=RM_left) && (result.y<RM_right) &&
-            (result.z>=RM_left) && (result.z<RM_right) &&
-            (result.w>=RM_left) && (result.w<RM_right))
-            flag = false;
-        else
-            rnd1 = rnd2;
-    }
-#endif
+    result = hgpu_float4_to_double4(rnd1,rnd2,RM_min,RM_max,RM_k);
     return result;
 }
 #endif
