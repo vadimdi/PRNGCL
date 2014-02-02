@@ -37,7 +37,7 @@
 
 #include "hgpu_prng.h"
 
-//#define HGPU_PRNG_SKIP_CHECK    // skip uniformity checking in double precision
+// #define HGPU_PRNG_SKIP_CHECK    // skip uniformity checking in double precision
 
 #define HGPU_PRNG_MAX_descriptions   32
 #define HGPU_PRNG_MAX_name_length   256
@@ -430,17 +430,17 @@ HGPU_PRNG_produce(HGPU_GPU_context* context,unsigned int prng_kernel_id){
 }
 
 double
-HGPU_PRNG_produce_CPU_float_one(HGPU_PRNG* prng,unsigned int,double,double){
+HGPU_PRNG_produce_CPU_float_one(HGPU_PRNG* prng,unsigned int){
     return (double) ((float) prng->prng->CPU_produce_one_double(prng->state));
 }
 
 double
-HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int,double,double){
+HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int){
     return prng->prng->CPU_produce_one_double(prng->state);
 }
 
 double
-HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right){
+HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop){
     double result = 0.0;
     double prng_k = prng->prng->k_value;
     float rnd1, rnd2;
@@ -450,10 +450,9 @@ HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double p
     while (flag) {
 #endif
         rnd2 = (float) (prng->prng->CPU_produce_one_double)(prng->state);
-        result = HGPU_PRNG_double_from_float(rnd1,rnd2,prng->prng->min_double_value,prng->prng->max_double_value,prng_k);
 
 #ifndef HGPU_PRNG_SKIP_CHECK
-        if ((result>=prng_left) && (result<prng_right))
+        if ((rnd1 > prng->prng->min_double_value) && (rnd1 < prng->prng->max_double_value))
             flag = false;
         else {
             // pass prns_drop prns
@@ -462,11 +461,12 @@ HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double p
         }
     }
 #endif
+    result = HGPU_PRNG_double_from_float(rnd1,rnd2,prng->prng->min_double_value,prng->prng->max_double_value,prng_k);
     return result;
 }
 
 double
-HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right){
+HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop){
     double result = 0.0;
     double prng_k = prng->prng->k_value;
     unsigned int rnd1, rnd2;
@@ -476,10 +476,9 @@ HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop,double pr
     while (flag) {
 #endif
         rnd2 = (prng->prng->CPU_produce_one_uint)(prng->state);
-        result = HGPU_PRNG_double_from_uint(rnd1,rnd2,prng->prng->min_uint_value,prng->prng->max_uint_value,prng_k);
 
 #ifndef HGPU_PRNG_SKIP_CHECK
-        if ((result>=prng_left) && (result<prng_right))
+        if ((rnd1 > prng->prng->min_uint_value) && (rnd1 < prng->prng->max_uint_value))
             flag = false;
         else {
             // pass prns_drop prns
@@ -488,6 +487,7 @@ HGPU_PRNG_produce_CPU_uintN_one(HGPU_PRNG* prng,unsigned int prns_drop,double pr
         }
     }
 #endif
+    result = HGPU_PRNG_double_from_uint(rnd1,rnd2,prng->prng->min_uint_value,prng->prng->max_uint_value,prng_k);
     return result;
 }
 
@@ -499,10 +499,8 @@ HGPU_PRNG_produce_CPU_one(HGPU_PRNG* prng){
         HGPU_GPU_error_note(HGPU_ERROR_BAD_PRNG,"PRNG is not initialized");
         return result;
     }
-    double (*prng_produce_one)(HGPU_PRNG*,unsigned int,double,double);
+    double (*prng_produce_one)(HGPU_PRNG*,unsigned int);
     double prng_k     = prng->prng->k_value;
-    double prng_left  = 0.0;
-    double prng_right = 1.0;
     unsigned int prng_drop = 0;
     prng_produce_one = NULL;
 
@@ -513,14 +511,10 @@ HGPU_PRNG_produce_CPU_one(HGPU_PRNG* prng){
             if (((prng->prng->output_type == HGPU_PRNG_output_type_uint)  ||
                  (prng->prng->output_type == HGPU_PRNG_output_type_uint4) ||
                  (prng->prng->output_type == HGPU_PRNG_output_type_uint4by1)) && (prng->prng->CPU_produce_one_uint)) {
-                 prng_left  = (prng->prng->min_double_value+prng_k*prng->prng->max_double_value);
-                 prng_right = (prng->prng->max_double_value+prng_k*prng->prng->min_double_value);
                  prng_drop  = HGPU_PRNG_get_output_type_values(prng) - 1;
                  if (prng->prng->output_type == HGPU_PRNG_output_type_uint4by1) prng_drop = 0;
                  prng_produce_one = &HGPU_PRNG_produce_CPU_uintN_one;
             } else {
-                 prng_left  = (prng->prng->min_double_value+prng_k*prng->prng->max_double_value);
-                 prng_right = (prng->prng->max_double_value+prng_k*prng->prng->min_double_value);
                  prng_drop  = HGPU_PRNG_get_output_type_values(prng) - 1;
                  if (prng->prng->output_type == HGPU_PRNG_output_type_float4by1) prng_drop = 0;
                  prng_produce_one = &HGPU_PRNG_produce_CPU_floatN_one;
@@ -531,7 +525,7 @@ HGPU_PRNG_produce_CPU_one(HGPU_PRNG* prng){
     }
 
     if (prng_produce_one)
-        result = (*prng_produce_one)(prng,prng_drop,prng_left,prng_right);
+        result = (*prng_produce_one)(prng,prng_drop);
 
     return result;
 }
@@ -546,10 +540,8 @@ HGPU_PRNG_produce_CPU(HGPU_PRNG* prng,double** randoms_CPU,unsigned int number_o
             HGPU_error_message(HGPU_ERROR_NO_MEMORY,"could not allocate memory for PRNG_CPU_output");
     }
 
-    double (*prng_produce_one)(HGPU_PRNG*,unsigned int,double,double);
-    double prng_k     = prng->prng->k_value;
-    double prng_left  = 0.0;
-    double prng_right = 1.0;
+    double (*prng_produce_one)(HGPU_PRNG*,unsigned int);
+    double prng_k    = prng->prng->k_value;
     unsigned int prng_drop = 0;
     prng_produce_one = NULL;
 
@@ -560,14 +552,10 @@ HGPU_PRNG_produce_CPU(HGPU_PRNG* prng,double** randoms_CPU,unsigned int number_o
             if (((prng->prng->output_type == HGPU_PRNG_output_type_uint)  ||
                  (prng->prng->output_type == HGPU_PRNG_output_type_uint4) ||
                  (prng->prng->output_type == HGPU_PRNG_output_type_uint4by1)) && (prng->prng->CPU_produce_one_uint)) {
-                 prng_left  = (prng->prng->min_double_value+prng_k*prng->prng->max_double_value);
-                 prng_right = (prng->prng->max_double_value+prng_k*prng->prng->min_double_value);
                  prng_drop  = HGPU_PRNG_get_output_type_values(prng) - 1;
                  if (prng->prng->output_type == HGPU_PRNG_output_type_uint4by1) prng_drop = 0;
                  prng_produce_one = &HGPU_PRNG_produce_CPU_uintN_one;
             } else {
-                 prng_left  = (prng->prng->min_double_value+prng_k*prng->prng->max_double_value);
-                 prng_right = (prng->prng->max_double_value+prng_k*prng->prng->min_double_value);
                  prng_drop  = HGPU_PRNG_get_output_type_values(prng) - 1;
                  if (prng->prng->output_type == HGPU_PRNG_output_type_float4by1) prng_drop = 0;
                  prng_produce_one = &HGPU_PRNG_produce_CPU_floatN_one;
@@ -579,7 +567,7 @@ HGPU_PRNG_produce_CPU(HGPU_PRNG* prng,double** randoms_CPU,unsigned int number_o
 
     if (prng_produce_one)
         for (unsigned int i=0; i<number_of_prns; i++)
-            result[i] = (*prng_produce_one)(prng,prng_drop,prng_left,prng_right);
+            result[i] = (*prng_produce_one)(prng,prng_drop);
 
     (*randoms_CPU) = result;
 }
