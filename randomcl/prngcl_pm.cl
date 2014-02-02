@@ -92,38 +92,31 @@ pm(__global uint4* seed_table,
     uint4 rnd1, rnd2;
     hgpu_double4 result;
 #else
-    float4 normal = (float4) PM_m_FP;
+    float4 m = (float4) PM_m_FP;
 #endif
     uint4 seed = seed_table[GID];
     for (uint i = 0; i < N; i++) {
 #ifdef PRECISION_DOUBLE // if double precision is defined
-        pm_step(&seed);
-        rnd1 = seed;
-
 #ifndef PRNG_SKIP_CHECK
-        bool flag = true;
-        while (flag) {
+        rnd1 = (uint4) 0;
+        while ((rnd1.x <= PM_min) || (rnd1.x >= PM_max) ||
+               (rnd1.y <= PM_min) || (rnd1.y >= PM_max) ||
+               (rnd1.z <= PM_min) || (rnd1.z >= PM_max) ||
+               (rnd1.w <= PM_min) || (rnd1.w >= PM_max)
+              )
 #endif
+        {
             pm_step(&seed);
-            rnd2 = seed;
-            result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
-
-#ifndef PRNG_SKIP_CHECK
-            if ((rnd1.x>PM_min) && (rnd1.x<PM_max) &&
-                (rnd1.y>PM_min) && (rnd1.y<PM_max) &&
-                (rnd1.z>PM_min) && (rnd1.z<PM_max) &&
-                (rnd1.w>PM_min) && (rnd1.w<PM_max)) {
-                flag = false;
-            }
-            else
-                rnd1 = rnd2;
+            rnd1 = seed;
         }
-#endif
+        pm_step(&seed);
+        rnd2 = seed;
 
+        result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
         randoms[giddst] = result;
 #else
         pm_step(&seed);
-        randoms[giddst] = hgpu_uint4_to_float4(seed) / normal;
+        randoms[giddst] = hgpu_uint4_to_float4(seed) / m;
 #endif
         giddst += GID_SIZE;
     }
