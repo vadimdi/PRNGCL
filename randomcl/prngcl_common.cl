@@ -8,6 +8,13 @@
  *           contains precision selection, etc.
  *
  *
+ * @section  CREDITS
+ *
+ *   Vadim Demchik and Alexey Gulov,
+ *   "Increasing precision of uniform pseudorandom number generators",
+ *   arXiv: 1402.xxxx [xx.xx].
+ *
+ *
  * @section  LICENSE
  *
  * Copyright (c) 2013, 2014 Vadim Demchik
