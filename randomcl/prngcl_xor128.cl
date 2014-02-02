@@ -53,9 +53,6 @@
 #define XOR128_min_FP (1.0/4294967296.0)
 #define XOR128_max_FP (4294967295.0/4294967296.0)
 #define XOR128_k      (2.3283064365386962890625E-10) // 1/2^32
-#define XOR128_left   (XOR128_min_FP+XOR128_k*XOR128_max_FP)
-#define XOR128_right  (XOR128_max_FP+XOR128_k*XOR128_min_FP)
-
 
 //________________________________________________________________________________________________________ XOR128 PRNG
 __attribute__((always_inline)) uint4
@@ -77,25 +74,20 @@ __attribute__((always_inline)) hgpu_double
 xor128_step_double(uint4* seed)
 {
     hgpu_double result;
-    uint rnd1, rnd2;
+    uint rnd1 = 0;
+    uint rnd2 = 0;
     uint4 sed = (*seed);
-    sed = xor128_step(sed);
-    rnd1 = sed.w;
 #ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
+    while ((rnd1 <= XOR128_min) || (rnd1 >= XOR128_max))
 #endif
+    {
         sed = xor128_step(sed);
-        rnd2 = sed.w;
-        result = hgpu_uint_to_double(rnd1,rnd2,XOR128_min,XOR128_max,XOR128_k);
-
-#ifndef PRNG_SKIP_CHECK
-        if ((result>=XOR128_left) && (result<XOR128_right))
-            flag = false;
-        else
-            rnd1 = rnd2;
+        rnd1 = sed.w;
     }
-#endif
+    sed = xor128_step(sed);
+    rnd2 = sed.w;
+
+    result = hgpu_uint_to_double(rnd1,rnd2,XOR128_min,XOR128_max,XOR128_k);
     (*seed) = sed;
     return result;
 }
@@ -111,7 +103,7 @@ xor128(__global uint4* seed_table,
     hgpu_double4 result;
 #else
     float4 result;
-    float4 normal = (float4) XOR128_m_FP;
+    float4 m = (float4) XOR128_m_FP;
 #endif
     uint4 seed = seed_table[GID];
     for (uint i = 0; i < N; i++) {
@@ -130,7 +122,7 @@ xor128(__global uint4* seed_table,
         result.z = (float) seed.w;
         seed = xor128_step(seed);
         result.w = (float) seed.w;
-        randoms[giddst] = result / normal;
+        randoms[giddst] = result / m;
 #endif
         giddst += GID_SIZE;
     }
