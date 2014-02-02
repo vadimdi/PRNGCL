@@ -50,8 +50,6 @@
 #define MRG32k3a_min    (1.0/4294967088.0)
 #define MRG32k3a_max    (4294967087.0/4294967088.0)
 #define MRG32k3a_k      (2.3283065492957279e-010) // 1/(2^32-208)
-#define MRG32k3a_left   (MRG32k3a_min+MRG32k3a_k*MRG32k3a_max)
-#define MRG32k3a_right  (MRG32k3a_max+MRG32k3a_k*MRG32k3a_min)
 
 #define MRG32k3a_m     (2.3283065492957276882397381481401e-10) // 1/(2^32-208) for MRG32k3a generator
 #define MRG32k3a_m1    4294967087
@@ -93,23 +91,14 @@ __attribute__((always_inline)) hgpu_double
 mrg32k3a_step_double(uint4* seed1,uint4* seed2)
 {
     hgpu_double rnd_double;
-    float rnd1, rnd2;
+    float rnd1 = 0.0;
+    float rnd2 = 0.0;
+#ifndef PRNG_SKIP_CHECK
+    while ((rnd1 <= MRG32k3a_min) || (rnd1 >= MRG32k3a_max))
+#endif
     mrg32k3a_step(seed1,seed2,&rnd1);
-
-#ifndef PRNG_SKIP_CHECK
-    bool flag = true;
-    while (flag) {
-#endif
-        mrg32k3a_step(seed1,seed2,&rnd2);
-        rnd_double = hgpu_float_to_double(rnd1,rnd2,MRG32k3a_min,MRG32k3a_max,MRG32k3a_k);
-
-#ifndef PRNG_SKIP_CHECK
-        if ((rnd_double>=MRG32k3a_left) && (rnd_double<MRG32k3a_right))
-            flag = false;
-        else
-            rnd1 = rnd2;
-    }
-#endif
+    mrg32k3a_step(seed1,seed2,&rnd2);
+    rnd_double = hgpu_float_to_double(rnd1,rnd2,MRG32k3a_min,MRG32k3a_max,MRG32k3a_k);
     return rnd_double;
 }
 #endif
