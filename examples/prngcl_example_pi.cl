@@ -1,23 +1,15 @@
 /******************************************************************************
- * @file     PRNGCL.cpp
+ * @file     prngcl_example_pi.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
- *           Library of pseudo-random number generators for Monte Carlo simulations on GPUs
- *
- *
- * @section  CREDITS
- *
- *   Vadim Demchik,
- *   "Pseudorandom Numbers Generation for Monte Carlo Simulations on GPUs: OpenCL Approach",
- *   ch.12 in book "Numerical Computations with GPUs", pp 245-271,
- *   doi: 10.1007/978-3-319-06548-9_12, Springer International Publishing, 2014
+ *           EXAMPLE: OpenCL implementation of MRG32k3a pseudo-random number generator
  *
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2014, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -43,14 +35,30 @@
  * 
  *****************************************************************************/
 
-#include "PRNGCL.h"
-#include "examples/prngcl_example_pi.h"
+#ifndef PRNGCL_EXAMPLE_PI_CL
+#define PRNGCL_EXAMPLE_PI_CL
 
-int main(int argc, char ** argv)
+#include "prngcl_common.cl"
+
+__kernel void
+calculate_pi(__global hgpu_float4* randoms,
+             __global float* acceptance,
+             const uint N)
 {
-    HGPU_GPU_test(argc,argv);
+    uint index = GID;
+    float count = 0;
+    hgpu_float4 rnd,rnd2;
 
-//    HGPU_GPU_example_pi(argc,argv);
+    for (uint i=0; i<N; i++) {
+        rnd = randoms[index];
+        rnd2 = rnd * rnd;
+        if ((rnd2.x+rnd2.y) <= 1.0) count += 1.0;
+        if ((rnd2.z+rnd2.w) <= 1.0) count += 1.0;
 
-    return 0;
+        index += GID_SIZE;
+    }
+    acceptance[GID] += count;
 }
+
+
+#endif

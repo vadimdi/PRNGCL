@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_timer.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           timer submodule
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -40,13 +40,23 @@
 // start timer
 HGPU_timer
 HGPU_timer_start(void){
+#ifdef SAFE_LINUX_TIMER
+    HGPU_timer timer;
+    time(&timer);
+    return (HGPU_timer) timer;
+#else
     return clock();
+#endif
 }
 
 // get timer value in seconds (time delta)
 double
 HGPU_timer_get(HGPU_timer timer){
+#ifdef SAFE_LINUX_TIMER
+    double result = difftime(HGPU_timer_start(),timer);
+#else
     double result = ((double) (clock() - timer)) / CLOCKS_PER_SEC;
+#endif
     return result;
 }
 

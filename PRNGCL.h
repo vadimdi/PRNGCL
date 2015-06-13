@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     PRNGCL.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.1.2
  *
  * @brief    [PRNGCL library]
  *           Library of pseudo-random number generators for Monte Carlo simulations on GPUs
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,

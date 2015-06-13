@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpucl.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           Interface for OpenCL AMD APP & nVidia SDK environment
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -40,19 +40,20 @@
 void
 HGPU_GPU_test(int argc, char** argv){
 
-    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);
-    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all);
+    HGPU_parameter** parameters_all = HGPU_parameters_get_all(argc,argv);     // get all parameters from commandline, .ini-file and environment (may be empty)
+    HGPU_GPU_context* context = HGPU_GPU_context_select_auto(parameters_all); // create new context according to parameters
 
     printf("********************************************************\n");
     printf(" PRNGCL library v.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
     printf(" HGPU core v.%u.%u.%u\n",HGPUCL_VERSION_MAJOR,HGPUCL_VERSION_MINOR,HGPUCL_VERSION_MICRO);
-    printf(" Copyright (c) 2013, Vadim Demchik\n");
+    printf(" Copyright (c) 2013-2015 Vadim Demchik\n");
     printf("********************************************************\n\n");
 
-    HGPU_GPU_context_print_used_hardware(context);
+    HGPU_GPU_context_print_used_hardware(context); // print using hardware
 
-    HGPU_PRNG_tests(context);
-//    HGPU_PRNG_benchmarks(context);
+    HGPU_PRNG_tests(context,parameters_all);       // test PRNGs
+//    HGPU_PRNG_benchmarks(context,parameters_all);  // benchmark PRNGs
 
-    HGPU_GPU_context_delete(&context);
+    HGPU_parameters_delete(&parameters_all);  // free parameters
+    HGPU_GPU_context_delete(&context);        // release context
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_string.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           string submodule
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,

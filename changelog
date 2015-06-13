@@ -2,6 +2,17 @@
 PRNGCL library change logs
 **************************
 
+-- Version 1.1.2 --
+- Improved timer-dependent initialization with MD5 (frequent timer-dependent initialization previously producing close random series)
+- Added compatibility with OpenCL 2.0
+
+
+-- Version 1.1.1 --
+- Improved double precision production on GPU
+- introduced new preprocessor directive HGPU_PRNG_SKIP_CHECK (skip uniformity checking in double precision)
+- Fixed low bound of MRG32k3a PRNG
+- Enhanced timer functions for linux, SAFE_LINUX_TIMER flag was introduced (in linux timer counts only CPU time, not real time)
+
 -- Version 1.1.0 --
 - Improved double precision production on GPU
 - Improved performance of PRNs production on CPU

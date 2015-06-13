@@ -1,7 +1,7 @@
 /******************************************************************************
- * @file     prngcl_pm.cl
+ * @file     prngcl_pm.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.2
  *
  * @brief    [PRNGCL library]
  *           contains implementation, description and initialization procedures of
@@ -17,7 +17,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -50,7 +50,7 @@
 #define HGPU_PRNG_PM_m      (2147483647.0)                 // 2^31-1
 #define HGPU_PRNG_PM_min    1
 #define HGPU_PRNG_PM_max    2147483646                     // 2^31-2
-#define HGPU_PRNG_PM_min_FP (1.0)
+#define HGPU_PRNG_PM_min_FP (1.0/2147483647.0)
 #define HGPU_PRNG_PM_max_FP (2147483646.0/2147483647.0)
 #define HGPU_PRNG_PM_k      (4.6566128752457969241058E-10) // 1/(2^31-1)
 
