@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_md5.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0.2
+ * @version  1.0
  *
  * @brief    [HGPU library]
  *           MD5 submodule for HGPU package
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,

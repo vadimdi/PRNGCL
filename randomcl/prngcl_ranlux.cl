@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_ranlux.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of RANLUX pseudo-random number generator
@@ -20,7 +20,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -54,6 +54,9 @@
 #define RL_min    (1.0/16777216.0)
 #define RL_max    (16777215.0/16777216.0)
 #define RL_k      (5.9604644775390625E-8) // 1/2^24
+
+#define RL_left   (RL_min+RL_k*RL_max)
+#define RL_right  (RL_max+RL_k*RL_min)
 
 #define RL_zero     0.0f
 #define RL_icons    2147483563
@@ -501,27 +504,26 @@ rl_step_double(float4* RL_seed0,float4* RL_seed1,float4* RL_seed2,float4* RL_see
 {
     hgpu_double4 result;
     hgpu_double2 rnd_double;
-    float4 rnd1 = (float4) 0.0;
-    float4 rnd2 = (float4) 0.0;
-#ifndef PRNG_SKIP_CHECK
-        while ((rnd1.x <= RL_min) || (rnd1.x >= RL_max) ||
-               (rnd1.z <= RL_min) || (rnd1.z >= RL_max)
-              )
-#endif
-            rnd1 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
+    float4 rnd1,rnd2;
+    bool flag = true;
+    while (flag) {
+        rnd1 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
         rnd_double = hgpu_float4_to_double2(rnd1,RL_min,RL_max,RL_k);
-        result.x = rnd_double.x;
-        result.y = rnd_double.y;
+        if ((rnd_double.x>=RL_left) && (rnd_double.x<RL_right) &&
+            (rnd_double.y>=RL_left) && (rnd_double.y<RL_right)) flag = false;
+    }
+    result.x = rnd_double.x;
+    result.y = rnd_double.y;
 
-#ifndef PRNG_SKIP_CHECK
-        while ((rnd2.x <= RL_min) || (rnd2.x >= RL_max) ||
-               (rnd2.z <= RL_min) || (rnd2.z >= RL_max)
-              )
-#endif
-            rnd2 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
+    flag = true;
+    while (flag) {
+        rnd2 = rl_step(RL_seed0,RL_seed1,RL_seed2,RL_seed3,RL_seed4,RL_seed5,RL_carin);
         rnd_double = hgpu_float4_to_double2(rnd2,RL_min,RL_max,RL_k);
-        result.z = rnd_double.x;
-        result.w = rnd_double.y;
+        if ((rnd_double.x>=RL_left) && (rnd_double.x<RL_right) &&
+            (rnd_double.y>=RL_left) && (rnd_double.y<RL_right)) flag = false;
+    }
+    result.z = rnd_double.x;
+    result.w = rnd_double.y;
 
     return result;
 }
@@ -570,3 +572,4 @@ ranlux(__global float4 * seedtable,__global hgpu_float4 * prns, const uint sampl
                                                                                                                               
                                                                                                                               
                                                                                                                               
+ 

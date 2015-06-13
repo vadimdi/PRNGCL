@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_ranlux.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
  *           contains implementation, description and initialization procedures of
@@ -21,7 +21,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,

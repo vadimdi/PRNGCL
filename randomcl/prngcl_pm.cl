@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_pm.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of Park-Miller pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -92,31 +92,30 @@ pm(__global uint4* seed_table,
     uint4 rnd1, rnd2;
     hgpu_double4 result;
 #else
-    float4 m = (float4) PM_m_FP;
+    float4 normal = (float4) PM_m_FP;
 #endif
     uint4 seed = seed_table[GID];
     for (uint i = 0; i < N; i++) {
 #ifdef PRECISION_DOUBLE // if double precision is defined
-#ifndef PRNG_SKIP_CHECK
-        rnd1 = (uint4) 0;
-        while ((rnd1.x <= PM_min) || (rnd1.x >= PM_max) ||
-               (rnd1.y <= PM_min) || (rnd1.y >= PM_max) ||
-               (rnd1.z <= PM_min) || (rnd1.z >= PM_max) ||
-               (rnd1.w <= PM_min) || (rnd1.w >= PM_max)
-              )
-#endif
-        {
+
+        bool flag = true;
+        while (flag) {
             pm_step(&seed);
             rnd1 = seed;
+            if ((rnd1.x>PM_min) && (rnd1.x<PM_max) &&
+                (rnd1.y>PM_min) && (rnd1.y<PM_max) &&
+                (rnd1.z>PM_min) && (rnd1.z<PM_max) &&
+                (rnd1.w>PM_min) && (rnd1.w<PM_max)) {
+                pm_step(&seed);
+                rnd2 = seed;
+                result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
+                flag = false;
+            }
         }
-        pm_step(&seed);
-        rnd2 = seed;
-
-        result = hgpu_uint4_to_double4(rnd1,rnd2,PM_min,PM_max,PM_k);
         randoms[giddst] = result;
 #else
         pm_step(&seed);
-        randoms[giddst] = hgpu_uint4_to_float4(seed) / m;
+        randoms[giddst] = hgpu_uint4_to_float4(seed) / normal;
 #endif
         giddst += GID_SIZE;
     }

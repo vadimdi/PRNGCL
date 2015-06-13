@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_timer.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0.2
+ * @version  1.0
  *
  * @brief    [HGPU library]
  *           timer submodule
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -42,11 +42,7 @@
 #include "../hgpucl/hgpucl_constants.h"
 #include "hgpu_string.h"
 
-#ifdef SAFE_LINUX_TIMER
-#define HGPU_timer time_t
-#else
 #define HGPU_timer clock_t
-#endif
 
     // structure for buffer
     typedef struct{

@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_prng.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
  *           Pseudo-random number generators for HGPU package
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -48,11 +48,9 @@
 
 #define PRNGCL_VERSION_MAJOR 1
 #define PRNGCL_VERSION_MINOR 1
-#define PRNGCL_VERSION_MICRO 2
+#define PRNGCL_VERSION_MICRO 0
 
 #define PRNGCL_ROOT_PATH    "randomcl/"     // global root path to OpenCL-files
-
-#define PRNGCL_MD5_INIT         // if defined then use MD5 hashing for initialization (to overcome timer-initialization problem), otherwise - plain initialization
 
 #ifdef __cplusplus
 extern "C" {
@@ -155,10 +153,10 @@ extern const HGPU_PRNG_description* HGPU_PRNG_default;
                         HGPU_PRNG*  HGPU_PRNG_new_with_parameters(HGPU_parameter** parameters);
 
                            double   HGPU_PRNG_produce_CPU_one(HGPU_PRNG* prng);
-                           double   HGPU_PRNG_produce_CPU_float_one( HGPU_PRNG* prng,unsigned int prns_drop);
-                           double   HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int prns_drop);
-                           double   HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop);
-                           double   HGPU_PRNG_produce_CPU_uintN_one( HGPU_PRNG* prng,unsigned int prns_drop);
+                           double   HGPU_PRNG_produce_CPU_float_one( HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
+                           double   HGPU_PRNG_produce_CPU_double_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
+                           double   HGPU_PRNG_produce_CPU_floatN_one(HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
+                           double   HGPU_PRNG_produce_CPU_uintN_one( HGPU_PRNG* prng,unsigned int prns_drop,double prng_left,double prng_right);
 
                              void   HGPU_PRNG_produce_CPU(HGPU_PRNG* prng,double** randoms_CPU,unsigned int number_of_prns);
                              void   HGPU_PRNG_produce(HGPU_GPU_context* context,unsigned int prng_kernel_id);
@@ -173,11 +171,10 @@ extern const HGPU_PRNG_description* HGPU_PRNG_default;
                              void   HGPU_PRNG_write_output_text(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
                              void   HGPU_PRNG_write_output_binary(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
 
-                     unsigned int   HGPU_PRNG_test(HGPU_GPU_context* context,HGPU_parameter** parameters,const HGPU_PRNG_description* prng_descr,
-                                                   unsigned int randseries,HGPU_precision precision,unsigned int number,double test_value);
+                     unsigned int   HGPU_PRNG_test(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_descr,unsigned int randseries,
+                                                   HGPU_precision precision,unsigned int number,double test_value);
 
-                           double   HGPU_PRNG_benchmark(HGPU_GPU_context* context,HGPU_parameter** parameters,
-                                                   const HGPU_PRNG_description* prng_descr,HGPU_precision precision);
+                           double   HGPU_PRNG_benchmark(HGPU_GPU_context* context,const HGPU_PRNG_description* prng_descr,HGPU_precision precision);
 
 #ifdef __cplusplus
 }

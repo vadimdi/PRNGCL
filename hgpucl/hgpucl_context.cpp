@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpucl_context.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0.2
+ * @version  1.0
  *
  * @brief    [HGPU library]
  *           Interface for OpenCL AMD APP & nVidia SDK environment
@@ -10,7 +10,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -47,6 +47,7 @@ HGPU_GPU_context_new(cl_device_id device,HGPU_GPU_debug debug_flags){
     }
 
     cl_int GPU_error;
+    cl_command_queue_properties profiling_properties = 0;
 
 	// create context
     HGPU_GPU_context* context = (HGPU_GPU_context*) calloc(1,sizeof(HGPU_GPU_context));
@@ -61,17 +62,8 @@ HGPU_GPU_context_new(cl_device_id device,HGPU_GPU_debug debug_flags){
     context->kernel      = NULL;
     context->buffer      = NULL;
 
-#ifndef CL_VERSION_2_0   // check OpenCL 2.0 compatibility
-    // for OpenCL 1.0, 1.1 or 1.2
-    cl_command_queue_properties profiling_properties = 0;
-    if(context->debug_flags.profiling) profiling_properties |= (CL_QUEUE_PROFILING_ENABLE); // enable profiling for debuging
+    if (context->debug_flags.profiling) profiling_properties = (CL_QUEUE_PROFILING_ENABLE); // enable profiling for debuging
 	context->queue = clCreateCommandQueue(context->context,context->device,profiling_properties,&GPU_error);
-#else
-    // for OpenCL 2.0
-    cl_queue_properties profiling_properties[] = { CL_QUEUE_PROPERTIES, (context->debug_flags.profiling) ?
-        (cl_command_queue_properties) CL_QUEUE_PROFILING_ENABLE : 0, 0 }; // enable profiling for debuging
-    context->queue = clCreateCommandQueueWithProperties(context->context,context->device,profiling_properties,&GPU_error);
-#endif
     HGPU_GPU_error_message(GPU_error,"clCreateCommandQueue failed");
 
     if (context->debug_flags.rebuild_binaries)

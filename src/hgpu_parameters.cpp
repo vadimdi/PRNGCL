@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_parameters.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0.2
+ * @version  1.0
  *
  * @brief    [HGPU library]
  *           Parameters submodule
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -42,6 +42,8 @@
             HGPU_parameters_add(&result,parameter);                                 \
             HGPU_parameter_delete(&parameter);                                      \
         };
+
+
 
 
 // make new array of (HGPU_parameter) parameters
@@ -268,8 +270,6 @@ HGPU_parameters_get_from_environment(void){
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_SEED3);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_SEED4);
     HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_RANLUX_NSKIP);
-    HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_TEST_MAX_PASSES);
-    HGPU_PARAMETER_INCLUDE(HGPU_PARAMETER_PRNG_TEST_MAX_DURATION);
     return result;
 }
 

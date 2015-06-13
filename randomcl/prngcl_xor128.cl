@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     prngcl_xor128.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1.2
+ * @version  1.1
  *
  * @brief    [PRNGCL library]
  *           contains OpenCL implementation of XOR128 pseudo-random number generator
@@ -16,7 +16,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013, Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -53,6 +53,9 @@
 #define XOR128_min_FP (1.0/4294967296.0)
 #define XOR128_max_FP (4294967295.0/4294967296.0)
 #define XOR128_k      (2.3283064365386962890625E-10) // 1/2^32
+#define XOR128_left   (XOR128_min_FP+XOR128_k*XOR128_max_FP)
+#define XOR128_right  (XOR128_max_FP+XOR128_k*XOR128_min_FP)
+
 
 //________________________________________________________________________________________________________ XOR128 PRNG
 __attribute__((always_inline)) uint4
@@ -74,20 +77,20 @@ __attribute__((always_inline)) hgpu_double
 xor128_step_double(uint4* seed)
 {
     hgpu_double result;
-    uint rnd1 = 0;
-    uint rnd2 = 0;
+    uint rnd1, rnd2;
     uint4 sed = (*seed);
-#ifndef PRNG_SKIP_CHECK
-    while ((rnd1 <= XOR128_min) || (rnd1 >= XOR128_max))
-#endif
-    {
-        sed = xor128_step(sed);
-        rnd1 = sed.w;
-    }
+    bool flag = true;
     sed = xor128_step(sed);
-    rnd2 = sed.w;
-
-    result = hgpu_uint_to_double(rnd1,rnd2,XOR128_min,XOR128_max,XOR128_k);
+    rnd1 = sed.w;
+    while (flag) {
+        sed = xor128_step(sed);
+        rnd2 = sed.w;
+        result = hgpu_uint_to_double(rnd1,rnd2,XOR128_min,XOR128_max,XOR128_k);
+        if ((result>=XOR128_left) && (result<XOR128_right))
+            flag = false;
+        else
+            rnd1 = rnd2;
+    }
     (*seed) = sed;
     return result;
 }
@@ -103,7 +106,7 @@ xor128(__global uint4* seed_table,
     hgpu_double4 result;
 #else
     float4 result;
-    float4 m = (float4) XOR128_m_FP;
+    float4 normal = (float4) XOR128_m_FP;
 #endif
     uint4 seed = seed_table[GID];
     for (uint i = 0; i < N; i++) {
@@ -122,7 +125,7 @@ xor128(__global uint4* seed_table,
         result.z = (float) seed.w;
         seed = xor128_step(seed);
         result.w = (float) seed.w;
-        randoms[giddst] = result / m;
+        randoms[giddst] = result / normal;
 #endif
         giddst += GID_SIZE;
     }
