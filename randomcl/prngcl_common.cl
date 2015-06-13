@@ -1,16 +1,23 @@
 /******************************************************************************
  * @file     prngcl_common.cl
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.1
+ * @version  1.1.2
  *
  * @brief    [PRNGCL library]
  *           common module for all PRNG implementations
  *           contains precision selection, etc.
  *
  *
+ * @section  CREDITS
+ *
+ *   Vadim Demchik and Alexey Gulov,
+ *   "Increasing precision of uniform pseudorandom number generators",
+ *   arXiv: 1401.8230 [cs.MS].
+ *
+ *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -42,12 +49,19 @@
 #define GID_SIZE    (get_global_size(0) * get_global_size(1) * get_global_size(2))
 #define GID         (get_global_id(0) + get_global_id(1) * get_global_size(0) + get_global_id(2) * get_global_size(0) * get_global_size(1))
 
+#define hgpu_single  float
+#define hgpu_single2 float2
+#define hgpu_single3 float3
+#define hgpu_single4 float4
+
 #if defined(cl_khr_fp64)
 
 #define hgpu_double     double
 #define hgpu_double2    double2
 #define hgpu_double3    double3
 #define hgpu_double4    double4
+
+//#define PRNG_SKIP_CHECK     // if defined = skip uniformity checking in double precision
 
 #if defined(cl_amd_fp64)    // AMD extension available?
 	#pragma OPENCL EXTENSION cl_amd_fp64 : enable
@@ -76,11 +90,6 @@
 #define hgpu_float3  float3
 #define hgpu_float4  float4
 #endif
-
-#define hgpu_single  float
-#define hgpu_single2 float2
-#define hgpu_single3 float3
-#define hgpu_single4 float4
 
 inline hgpu_double4 hgpu_uint4_2_double4(uint4 x){
     hgpu_double4 result;
@@ -111,38 +120,37 @@ inline hgpu_double4 hgpu_uint4_to_double4(uint4 rnd1, uint4 rnd2, uint rnd_min, 
 }
 
 inline hgpu_double hgpu_float_to_double(float rnd1, float rnd2, double rnd_min, double rnd_max, double k){
-    hgpu_double result;
-        double a1 = (rnd_max - rnd_min);
-        double a2 = k * a1;
-        double a3 = a1 * (1.0 - k);
-        double a4 = -(rnd_min / a1 + rnd_max) * k - rnd_min;
-        result = (trunc((rnd1 - rnd_min) / a2) + rnd2 / a1) * k / a3 + a4 / a3;
-        return result;
+    double a1 = (rnd_max - rnd_min);
+    double a2 = trunc((a1-2.0*k) / k) + a1;
+        return (trunc((rnd1-rnd_min-k) / k) + rnd2 - rnd_min) / a2 * (1.0-k*k);
 }
 
 inline hgpu_double2 hgpu_float4_to_double2(float4 rnd, double rnd_min, double rnd_max, double k){
     hgpu_double2 result;
-        double a1 = (rnd_max - rnd_min);
-        double a2 = k * a1;
-        double a3 = a1 * (1.0 - k);
-        double a4 = -(rnd_min / a1 + rnd_max) * k - rnd_min;
-        result.x = (trunc((rnd.x - rnd_min) / a2) + rnd.y / a1) * k / a3 + a4 / a3;
-        result.y = (trunc((rnd.z - rnd_min) / a2) + rnd.w / a1) * k / a3 + a4 / a3;
+    double a1 = (rnd_max - rnd_min);
+    double a2 = trunc((a1-2.0*k) / k) + a1;
+        result.x = (trunc((rnd.x-rnd_min-k) / k) + rnd.y - rnd_min) / a2 * (1.0-k*k);
+        result.y = (trunc((rnd.z-rnd_min-k) / k) + rnd.w - rnd_min) / a2 * (1.0-k*k);
         return result;
 }
 
 inline hgpu_double4 hgpu_float4_to_double4(float4 rnd1, float4 rnd2, double rnd_min, double rnd_max, double k){
     hgpu_double4 result;
-        double a1 = (rnd_max - rnd_min);
-        double a2 = k * a1;
-        double a3 = a1 * (1.0 - k);
-        double a4 = -(rnd_min / a1 + rnd_max) * k - rnd_min;
-        result.x = (trunc((rnd1.x - rnd_min) / a2) + rnd2.x / a1) * k / a3 + a4 / a3;
-        result.y = (trunc((rnd1.y - rnd_min) / a2) + rnd2.y / a1) * k / a3 + a4 / a3;
-        result.z = (trunc((rnd1.z - rnd_min) / a2) + rnd2.z / a1) * k / a3 + a4 / a3;
-        result.w = (trunc((rnd1.w - rnd_min) / a2) + rnd2.w / a1) * k / a3 + a4 / a3;
+    double a1 = (rnd_max - rnd_min);
+    double a2 = trunc((a1-2.0*k) / k) + a1;
+        result.x = (trunc((rnd1.x-rnd_min-k) / k) + rnd2.x - rnd_min) / a2 * (1.0-k*k);
+        result.y = (trunc((rnd1.y-rnd_min-k) / k) + rnd2.y - rnd_min) / a2 * (1.0-k*k);
+        result.z = (trunc((rnd1.z-rnd_min-k) / k) + rnd2.z - rnd_min) / a2 * (1.0-k*k);
+        result.w = (trunc((rnd1.w-rnd_min-k) / k) + rnd2.w - rnd_min) / a2 * (1.0-k*k);
         return result;
 }
+
+#else
+
+#define hgpu_float   float
+#define hgpu_float2  float2
+#define hgpu_float3  float3
+#define hgpu_float4  float4
 
 #endif
 
@@ -190,4 +198,4 @@ typedef union _Uint_and_Float   // Uint <---> Float converter
                                                                                                                                                      
                                                                                                                                                      
                                                                                                                                                      
-                                                                                                                                                     
+                                                                                                                                                      

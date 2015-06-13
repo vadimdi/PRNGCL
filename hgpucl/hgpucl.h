@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpucl.h
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0
+ * @version  1.0.2
  *
  * @brief    [HGPU library]
  *           Interface for OpenCL AMD APP & nVidia SDK environment
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013, Vadim Demchik
+ * Copyright (c) 2013-2015 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -44,7 +44,6 @@
 #ifndef HGPU_max
 #define HGPU_max(a,b) ((a) > (b)) ? (a) : (b)
 #endif
-
 
 
 #include <CL/cl.h>
