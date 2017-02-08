@@ -73,13 +73,13 @@ HGPU_PRNG_srand(unsigned int randseries){
     md5_hash = HGPU_md5(md5_srand);
 
     md5_ptr = md5_hash;
-    memcpy(&HGPU_PRNG_internal_state.x, md5_ptr, sizeof(HGPU_PRNG_internal_state.x) );
+    memcpy(&(HGPU_PRNG_internal_state.x), md5_ptr, sizeof(HGPU_PRNG_internal_state.x) );
     md5_ptr += sizeof(HGPU_PRNG_internal_state.x);
-    memcpy(&HGPU_PRNG_internal_state.y, md5_ptr, sizeof(HGPU_PRNG_internal_state.y) );
+    memcpy(&(HGPU_PRNG_internal_state.y), md5_ptr, sizeof(HGPU_PRNG_internal_state.y) );
     md5_ptr += sizeof(HGPU_PRNG_internal_state.y);
-    memcpy(&HGPU_PRNG_internal_state.z, md5_ptr, sizeof(HGPU_PRNG_internal_state.z) );
+    memcpy(&(HGPU_PRNG_internal_state.z), md5_ptr, sizeof(HGPU_PRNG_internal_state.z) );
     md5_ptr += sizeof(HGPU_PRNG_internal_state.z);
-    memcpy(&HGPU_PRNG_internal_state.t, md5_ptr, sizeof(HGPU_PRNG_internal_state.t) );
+    memcpy(&(HGPU_PRNG_internal_state.t), md5_ptr, sizeof(HGPU_PRNG_internal_state.t) );
 
     free(md5_hash);
 #endif
@@ -93,19 +93,19 @@ unsigned int
 HGPU_PRNG_rand32bit(void){
     unsigned long t=(HGPU_PRNG_internal_state.x^(HGPU_PRNG_internal_state.x<<11));
 
-	HGPU_PRNG_internal_state.x = HGPU_PRNG_internal_state.y;
-	HGPU_PRNG_internal_state.y = HGPU_PRNG_internal_state.z;
-	HGPU_PRNG_internal_state.z = HGPU_PRNG_internal_state.t;
-	HGPU_PRNG_internal_state.t = (HGPU_PRNG_internal_state.t^(HGPU_PRNG_internal_state.t>>19))^(t^(t>>8));
+    HGPU_PRNG_internal_state.x = HGPU_PRNG_internal_state.y;
+    HGPU_PRNG_internal_state.y = HGPU_PRNG_internal_state.z;
+    HGPU_PRNG_internal_state.z = HGPU_PRNG_internal_state.t;
+    HGPU_PRNG_internal_state.t = (HGPU_PRNG_internal_state.t^(HGPU_PRNG_internal_state.t>>19))^(t^(t>>8));
 
     return HGPU_PRNG_internal_state.t;
 }
 
 inline double
 trunc(double x){
-	double z;
-	modf(x,&z);
-	return z;
+    double z;
+    modf(x,&z);
+    return z;
 }
 
 double
@@ -606,14 +606,14 @@ HGPU_PRNG_make_header(HGPU_PRNG* prng){
 
     int j = 0;
     char buffer[HGPU_GPU_MAX_OPTIONS_LENGTH];
-	j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNGCL library ver.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
-	j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," ***************************************************\n");
+    j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNGCL library ver.%u.%u.%u\n",PRNGCL_VERSION_MAJOR,PRNGCL_VERSION_MINOR,PRNGCL_VERSION_MICRO);
+    j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," ***************************************************\n");
     j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNG                        : %s\n",prng->prng->name);
     j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNG precision              : %s\n",HGPU_convert_precision_to_str(prng->parameters->precision));
     j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNG randseries             : %u\n",prng->parameters->randseries);
     j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNG instances              : %u\n",prng->parameters->instances);
     j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," PRNG samples                : %u\n",prng->parameters->samples);
-	j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," ***************************************************\n");
+    j += sprintf_s(buffer+j,HGPU_GPU_MAX_OPTIONS_LENGTH-j," ***************************************************\n");
 
     size_t result_length = strlen(buffer) + 1;
     result = (char*) calloc(result_length,sizeof(char));
@@ -680,8 +680,8 @@ HGPU_PRNG_write_results(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* fi
     if (!buffer) HGPU_error(HGPU_ERROR_NO_MEMORY);
     HGPU_io_path_join_filename(&buffer,HGPU_FILENAME_MAX,file_path,file_name);
 
-	fopen_s(&stream,buffer,"w+");
-	if(stream){
+    fopen_s(&stream,buffer,"w+");
+    if(stream){
         char* header = HGPU_PRNG_make_header(prng);
         fprintf(stream,"%s",header);
         unsigned int output_type_vals = HGPU_PRNG_get_output_type_values(prng);
@@ -702,8 +702,8 @@ HGPU_PRNG_write_output_text(HGPU_GPU_context* context,HGPU_PRNG* prng,const char
     if (!buffer) HGPU_error(HGPU_ERROR_NO_MEMORY);
     HGPU_io_path_join_filename(&buffer,HGPU_FILENAME_MAX,file_path,file_name);
 
-	fopen_s(&stream,buffer,"w+");
-	if(stream){
+    fopen_s(&stream,buffer,"w+");
+    if(stream){
         unsigned int output_type_vals = HGPU_PRNG_get_output_type_values(prng);
         unsigned int number_of_prns = prng->parameters->instances * prng->parameters->samples * output_type_vals;
         for (unsigned int i=0; i<(number_of_prns>>2); i++){
@@ -743,7 +743,7 @@ HGPU_PRNG_test(HGPU_GPU_context* context,HGPU_parameter** parameters,const HGPU_
     unsigned int output_type_vals = HGPU_PRNG_get_output_type_values(prng);
     unsigned int number_of_prns = prng->parameters->samples * output_type_vals;
     double GPU_prn, CPU_prn;
-    for (size_t i=0;i<number_of_prns;i++) {
+    for (unsigned int i=0; i<number_of_prns; ++i) {
         if (precision==HGPU_precision_single) {
             GPU_prn = ((float) HGPU_PRNG_GPU_get_from_buffer(context,prng,i));
             CPU_prn = ((float) CPU_results[i]);
@@ -805,8 +805,8 @@ HGPU_PRNG_benchmark(HGPU_GPU_context* context,HGPU_parameter** parameters,const 
         unsigned long int alloc_memory = HGPU_GPU_device_get_max_allocation_memory(context->device);
         unsigned int elem_size = (precision==HGPU_precision_single) ? sizeof(cl_float) : sizeof(cl_double);
 
-        unsigned int samples = HGPU_convert_round_to_power_2(((alloc_memory >> 1) - prng->prng->state_size * instances) / 
-                               (elem_size * output_type_vals * instances));
+        unsigned int samples = HGPU_convert_round_to_power_2((unsigned int)(((alloc_memory >> 1) - prng->prng->state_size * instances) / 
+                               (elem_size * output_type_vals * instances)));
         unsigned int samples_best = samples;
 
         if (parameter_samples && (parameter_samples->value_text))     samples   = parameter_samples->value_integer;

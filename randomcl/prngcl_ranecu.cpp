@@ -111,13 +111,13 @@ HGPU_PRNG_RANECU_produce_one_uint_CPU(void* PRNG_state){
     int z = state->jseed1 - state->jseed2;
     if (z < 1) z += HGPU_PRNG_RANECU_icons3;
 
-	return z;
+    return z;
 }
 
 static double
 HGPU_PRNG_RANECU_produce_one_double_CPU(void* PRNG_state){
     double y = (double) HGPU_PRNG_RANECU_produce_one_uint_CPU(PRNG_state);
-	return (y / HGPU_PRNG_RANECU_twom31);
+    return (y / HGPU_PRNG_RANECU_twom31);
 }
 
 static void
@@ -136,14 +136,14 @@ HGPU_PRNG_RANECU_init_GPU(HGPU_GPU_context* context,void* PRNG_state,HGPU_PRNG_p
     if ((!PRNG_seed_table_uint4) || ((!PRNG_randoms_double) && (!PRNG_randoms)))
         HGPU_error_message(HGPU_ERROR_NO_MEMORY,"could not allocate memory for randoms");
 
-    for (unsigned int i=0; i<(seed_table_size>>1); i++) {
+    for (size_t i=0; i<(seed_table_size>>1); i++) {
         PRNG_seed_table_uint4[i].s[0] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_1;
         PRNG_seed_table_uint4[i].s[1] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_1;
         PRNG_seed_table_uint4[i].s[2] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_1;
         PRNG_seed_table_uint4[i].s[3] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_1;
     }
 
-    for (unsigned int i=(seed_table_size>>1); i<seed_table_size; i++) {
+    for (size_t i=(seed_table_size>>1); i<seed_table_size; i++) {
         PRNG_seed_table_uint4[i].s[0] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_2;
         PRNG_seed_table_uint4[i].s[1] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_2;
         PRNG_seed_table_uint4[i].s[2] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANECU_init_2;

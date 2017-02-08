@@ -75,9 +75,9 @@
 
 inline double
 trunc(double x) {
-	double z;
-	modf(x,&z);
-	return z;
+    double z;
+    modf(x,&z);
+    return z;
 }
 
 static void
@@ -121,13 +121,13 @@ HGPU_PRNG_MRG32K3A_produce_one_uint_CPU(void* PRNG_state){
     if (x1n>x2n) rnd = (unsigned int) (x1n - x2n);
     else         rnd = (unsigned int) (x1n - x2n  + HGPU_PRNG_MRG32K3A_m1);
 
- 	return rnd;
+    return rnd;
 }
 
 static double
 HGPU_PRNG_MRG32K3A_produce_one_double_CPU(void* PRNG_state){
     double result = (double) HGPU_PRNG_MRG32K3A_produce_one_uint_CPU(PRNG_state);
-	return (result * HGPU_PRNG_MRG32K3A_m);
+    return (result * HGPU_PRNG_MRG32K3A_m);
 }
 
 static void
@@ -146,14 +146,14 @@ HGPU_PRNG_MRG32K3A_init_GPU(HGPU_GPU_context* context,void* PRNG_state,HGPU_PRNG
     if ((!PRNG_seed_table_uint4) || ((!PRNG_randoms_double) && (!PRNG_randoms)))
         HGPU_error_message(HGPU_ERROR_NO_MEMORY,"could not allocate memory for randoms");
 
-    for (unsigned int i=0; i<(seed_table_size>>1); i++) {
+    for (size_t i=0; i<(seed_table_size>>1); ++i) {
         PRNG_seed_table_uint4[i].s[0] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_1);
         PRNG_seed_table_uint4[i].s[1] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_1);
         PRNG_seed_table_uint4[i].s[2] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_1);
         PRNG_seed_table_uint4[i].s[3] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_1);
     }
 
-    for (unsigned int i=(seed_table_size>>1); i<seed_table_size; i++) {
+    for (size_t i=(seed_table_size>>1); i<seed_table_size; ++i) {
         PRNG_seed_table_uint4[i].s[0] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_2);
         PRNG_seed_table_uint4[i].s[1] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_2);
         PRNG_seed_table_uint4[i].s[2] = (HGPU_PRNG_rand32bit() % HGPU_PRNG_MRG32K3A_init_2);

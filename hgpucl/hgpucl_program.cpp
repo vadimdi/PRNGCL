@@ -194,7 +194,7 @@ HGPU_program_build(cl_context context,cl_device_id device,const char* source,con
     if (GPU_error!=CL_SUCCESS) {
 
         clGetProgramInfo(result,CL_PROGRAM_SOURCE,0,NULL,&clBuildLog_size);
-		clBuildLog = (char*) calloc(clBuildLog_size+1, sizeof(char));
+        clBuildLog = (char*) calloc(clBuildLog_size+1, sizeof(char));
         clGetProgramInfo(result,CL_PROGRAM_SOURCE,clBuildLog_size+1,clBuildLog,&clBuildLog_actual_size);
         // write build log
         // join options and clBuildLog

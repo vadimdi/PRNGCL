@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="HGPUCL">
+      <UniqueIdentifier>{4dfb22c6-7b80-43f6-a0aa-b6a8ede67777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HGPUCL\include">
+      <UniqueIdentifier>{1b11577a-db71-4ead-bcf7-f0a04d8fe428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HGPUCL\src">
+      <UniqueIdentifier>{6dac40d1-90f9-493e-821a-505c02778174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{1401867d-eb97-4b04-817e-23dc2fa4be61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl">
+      <UniqueIdentifier>{2d51c067-dbb4-4cfe-99c7-6b816d8f9d09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\Constant">
+      <UniqueIdentifier>{64f26395-bb89-4d78-a1c0-6e23e50d9dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\Examples">
+      <UniqueIdentifier>{aa530a30-4c4d-4c4d-9432-76fd33ca3a5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\MRG32k3a">
+      <UniqueIdentifier>{3f031d9e-dcbf-4c4b-b333-2ebd974d5f9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\PM">
+      <UniqueIdentifier>{e8f0fb40-5963-46f8-b833-08e4c18a974e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\RANECU">
+      <UniqueIdentifier>{3beb0578-9ecf-4db9-979e-cc9479eb0218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\RANLUX">
+      <UniqueIdentifier>{54c822cf-d712-43d7-a8a7-12d64049b9b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\RANMAR">
+      <UniqueIdentifier>{7c0c287b-5dd7-4015-bbf2-66c4cfbf8ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\Tests">
+      <UniqueIdentifier>{b16ea63d-70c6-4786-b521-5f07a85ef665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\XOR128">
+      <UniqueIdentifier>{6c266667-8ae7-4abe-8531-dd0034e06efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="randomcl\XOR7">
+      <UniqueIdentifier>{631334d8-1518-4242-800b-2e85af1ef618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{0baba797-7a66-4e36-b913-34a970965aad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\PRNGCL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_buffer.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_constants.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_context.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_devices.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_error.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_kernel.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_platforms.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_program.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\platform.h">
+      <Filter>HGPUCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_convert.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_enum.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_error.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_io.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_md5.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_parameters.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_string.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_timer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\examples\prngcl_example_pi.h">
+      <Filter>randomcl\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\randomcl\hgpu_prng_test.h">
+      <Filter>randomcl\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\randomcl\hgpu_prng.h">
+      <Filter>randomcl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\hgpucl\hgpucl.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_buffer.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_context.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_devices.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_error.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_kernel.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_platforms.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hgpucl\hgpucl_program.cpp">
+      <Filter>HGPUCL\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_constant.cpp">
+      <Filter>randomcl\Constant</Filter>
+    </ClCompile>
+    <ClCompile Include="..\examples\prngcl_example_pi.cpp">
+      <Filter>randomcl\Examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_mrg32k3a.cpp">
+      <Filter>randomcl\MRG32k3a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_pm.cpp">
+      <Filter>randomcl\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_ranecu.cpp">
+      <Filter>randomcl\RANECU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_ranlux.cpp">
+      <Filter>randomcl\RANLUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_ranmar.cpp">
+      <Filter>randomcl\RANMAR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\hgpu_prng_test.cpp">
+      <Filter>randomcl\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_xor128.cpp">
+      <Filter>randomcl\XOR128</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\prngcl_xor7.cpp">
+      <Filter>randomcl\XOR7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randomcl\hgpu_prng.cpp">
+      <Filter>randomcl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PRNGCL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_convert.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_enum.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_error.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_io.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_md5.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_parameters.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_string.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\hgpu_timer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\randomcl\prngcl_constant.cl">
+      <Filter>randomcl\Constant</Filter>
+    </None>
+    <None Include="..\examples\prngcl_example_pi.cl">
+      <Filter>randomcl\Examples</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_mrg32k3a.cl">
+      <Filter>randomcl\MRG32k3a</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_pm.cl">
+      <Filter>randomcl\PM</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_ranecu.cl">
+      <Filter>randomcl\RANECU</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_ranlux.cl">
+      <Filter>randomcl\RANLUX</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_ranmar.cl">
+      <Filter>randomcl\RANMAR</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_xor128.cl">
+      <Filter>randomcl\XOR128</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_xor7.cl">
+      <Filter>randomcl\XOR7</Filter>
+    </None>
+    <None Include="..\randomcl\prngcl_common.cl">
+      <Filter>randomcl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\hgpucl.txt" />
+  </ItemGroup>
+</Project>

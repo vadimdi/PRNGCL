@@ -69,6 +69,8 @@
   #define	strcat_s(newtext, replength, resorc, lenz) (strcat(newtext, resorc))
   #define	Sleep(tm) { for(int i=1;i<=(int) (tm/CLOCKS_PER_SEC);i++) sleep(1); }
 #endif
+#define strlen_s(str)       ( (str) ? strlen(str) : 0 )
+
 
 #include <stdlib.h>
 #include <math.h>

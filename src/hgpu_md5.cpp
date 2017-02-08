@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hgpu_md5.cpp
  * @author   Vadim Demchik <vadimdi@yahoo.com>
- * @version  1.0.2
+ * @version  1.0.3
  *
  * @brief    [HGPU library]
  *           MD5 submodule for HGPU package
@@ -9,7 +9,7 @@
  *
  * @section  LICENSE
  *
- * Copyright (c) 2013-2015 Vadim Demchik
+ * Copyright (c) 2013-2017 Vadim Demchik
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -46,7 +46,7 @@
                     bool  HGPU_md5_finalized;
 
 inline unsigned int
-HGPU_md5_rol(unsigned int x, int s){
+HGPU_md5_rol(const unsigned int x, const int s){
     return ((x << s) | (x >> (32-s)));
 }
 
@@ -64,16 +64,16 @@ HGPU_md5_init(void){
     HGPU_md5_s[32] = 4;     HGPU_md5_s[33] = 11;    HGPU_md5_s[34] = 16;    HGPU_md5_s[35] = 23;
     HGPU_md5_s[48] = 6;     HGPU_md5_s[49] = 10;    HGPU_md5_s[50] = 15;    HGPU_md5_s[51] = 21;
 
-    for (int i=0; i<4; i++)
-        for (int j=1; j<4; j++) {
+    for (int i=0; i<4; ++i)
+        for (int j=1; j<4; ++j) {
             HGPU_md5_s[16 * i + 4 * j + 0] = HGPU_md5_s[16 * i    ];
             HGPU_md5_s[16 * i + 4 * j + 1] = HGPU_md5_s[16 * i + 1];
             HGPU_md5_s[16 * i + 4 * j + 2] = HGPU_md5_s[16 * i + 2];
             HGPU_md5_s[16 * i + 4 * j + 3] = HGPU_md5_s[16 * i + 3];
         }
 
-    for (int i=0; i<64; i++)
-        HGPU_md5_t[i] = (unsigned int) floor(abs(sin((double) i + 1)) * pow(2.0,32));
+    for (int i=0; i<64; ++i)
+        HGPU_md5_t[i] = (unsigned int) floor(fabs(sin((double) i + 1)) * pow(2.0,32));
 
     memset(HGPU_md5_buffer, 0, sizeof(HGPU_md5_buffer));
 }
@@ -82,7 +82,7 @@ void
 HGPU_md5_finalize(void){
     unsigned char HGPU_md5_padding[64];
     HGPU_md5_padding[0] = 128;
-    for (int i=1; i<64; i++) HGPU_md5_padding[i]=0;
+    for (int i=1; i<64; ++i) HGPU_md5_padding[i]=0;
 
     if (!HGPU_md5_finalized) {
         unsigned char bits[8];
@@ -102,26 +102,26 @@ HGPU_md5_finalize(void){
 }
 
 void
-HGPU_md5_getword(const unsigned char* buffer, unsigned int* x, unsigned int len){
+HGPU_md5_getword(const unsigned char* buffer, unsigned int* x, const unsigned int len){
     unsigned int i = 0;
     for (unsigned int j = 0; j < len; j += 4) {
         x[i] = ((unsigned int) buffer[j    ]) |
               (((unsigned int) buffer[j + 1]) <<  8) |
               (((unsigned int) buffer[j + 2]) << 16) |
               (((unsigned int) buffer[j + 3]) << 24);
-        i++;
+        ++i;
     }
 }
 
 void
-HGPU_md5_setword(const unsigned int* x, unsigned char* buffer, unsigned int len){
+HGPU_md5_setword(const unsigned int* x, unsigned char* buffer, const unsigned int len){
     unsigned int i = 0;
     for (unsigned int j = 0; j < len; j += 4) {
         buffer[j    ] = (x[i]      ) & 0xff;
         buffer[j + 1] = (x[i] >>  8) & 0xff;
         buffer[j + 2] = (x[i] >> 16) & 0xff;
         buffer[j + 3] = (x[i] >> 24) & 0xff;
-        i++;
+        ++i;
     }
 }
 
@@ -137,7 +137,7 @@ HGPU_md5_step(const unsigned char* MD5_block){
 
     HGPU_md5_getword(MD5_block, w, HGPU_MD5_BLOCKSIZE);
 
-    for(int i=0; i<HGPU_MD5_BLOCKSIZE; i++){
+    for(int i=0; i<HGPU_MD5_BLOCKSIZE; ++i){
         if (i < 16) {
             f = (b & c) | ((~b) & d);
             g = i;
@@ -170,7 +170,7 @@ HGPU_md5_step(const unsigned char* MD5_block){
 }
 
 void
-HGPU_md5_update(const unsigned char* input, unsigned int len){
+HGPU_md5_update(const unsigned char* input, const unsigned int len){
     unsigned int index = HGPU_md5_bytes[0] / 8 % HGPU_MD5_BLOCKSIZE;
 
     if ((HGPU_md5_bytes[0] += (len << 3)) < (len << 3)) HGPU_md5_bytes[1]++;
@@ -192,23 +192,26 @@ HGPU_md5_update(const unsigned char* input, unsigned int len){
 }
 
 void
-HGPU_md5_update(const char* input, unsigned int len){
+HGPU_md5_update(const char* input, const unsigned int len){
     HGPU_md5_update((const unsigned char*) input, len);
 }
 
 char*
 HGPU_md5_getresult(void){
-    char* buf = (char*) calloc(34,sizeof(char));
-    if (HGPU_md5_finalized)
-        for (int i=0; i<16; i++)
-            sprintf_s(buf+i*2, sizeof(buf), "%02x", HGPU_md5_result[i]);
-    buf[32]=0;
+    const size_t buf_size = HGPU_MD5_BLOCKSIZE;
+    char* buf = (char*) calloc(buf_size, sizeof(char));
+    if (buf) {
+        if (HGPU_md5_finalized)
+            for (int i = 0; i<16; ++i)
+                sprintf_s(buf + i * 2, (buf_size - i * 2), "%02x", HGPU_md5_result[i]);
+        buf[32] = 0;
+    }
   return buf;
 }
 
 char*
 HGPU_md5(const char* str){
-    unsigned int len = (unsigned int) strlen(str);
+    unsigned int len = (unsigned int) strlen_s(str);
 
     HGPU_md5_init();
     HGPU_md5_update(str, len);

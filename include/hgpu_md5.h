@@ -45,10 +45,10 @@
                     void  HGPU_md5_init(void);
                     void  HGPU_md5_finalize(void);
                     void  HGPU_md5_step(const unsigned char* md5_block);
-                    void  HGPU_md5_getword(const unsigned char* buffer, unsigned int* x, unsigned int len);
-                    void  HGPU_md5_setword(const unsigned int* x, unsigned char* buffer, unsigned int len);
-                    void  HGPU_md5_update(const unsigned char* input, unsigned int len);
-                    void  HGPU_md5_update(const char*          input, unsigned int len);
+                    void  HGPU_md5_getword(const unsigned char* buffer, unsigned int* x, const unsigned int len);
+                    void  HGPU_md5_setword(const unsigned int* x, unsigned char* buffer, const unsigned int len);
+                    void  HGPU_md5_update(const unsigned char* input, const unsigned int len);
+                    void  HGPU_md5_update(const char*          input, const unsigned int len);
                     char* HGPU_md5_getresult(void);
                     char* HGPU_md5(const char* str);
 

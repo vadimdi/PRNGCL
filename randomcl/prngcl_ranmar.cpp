@@ -99,46 +99,46 @@ HGPU_PRNG_RANMAR_initialize_seedtable_CPU(void* PRNG_state){
     state->J97 = 32;
     state->C = (362436.0 / 16777216.0);
 
-	int i = ((state->seed1 / 177) % 177) + 2;
-	int j = (state->seed1 % 177) + 2;
-	int k = ((state->seed2 / 169) % 178) + 1;
-	int l = (state->seed2 % 169);
-	for (int n = 0; n < 97; n++)
-	{
-		int s = 0;
-		int t = 8388608;
-		for (int m = 0; m < 24; m++)
-		{
-			int u = (i * j) % 179;
-			u = (u * k) % 179;
-			i = j;
-			j = k;
-			k = u;
-			l = (53 * l + 1) % 169;
-			if ((l * u) % 64 >= 32) s = s + t; 
-			t = t >> 1;
-		}
-		state->seeds[n] = ((float) s) / 16777216.0f;
-	}
+    int i = ((state->seed1 / 177) % 177) + 2;
+    int j = (state->seed1 % 177) + 2;
+    int k = ((state->seed2 / 169) % 178) + 1;
+    int l = (state->seed2 % 169);
+    for (int n = 0; n < 97; n++)
+    {
+        int s = 0;
+        int t = 8388608;
+        for (int m = 0; m < 24; m++)
+        {
+            int u = (i * j) % 179;
+            u = (u * k) % 179;
+            i = j;
+            j = k;
+            k = u;
+            l = (53 * l + 1) % 169;
+            if ((l * u) % 64 >= 32) s = s + t; 
+            t = t >> 1;
+        }
+        state->seeds[n] = ((float) s) / 16777216.0f;
+    }
 }
 
 static double
 HGPU_PRNG_RANMAR_produce_one_double_CPU(void* PRNG_state){
     HGPU_PRNG_RANMAR_state_t* state = (HGPU_PRNG_RANMAR_state_t*) PRNG_state;
 
-	float uni = state->seeds[state->I97] - state->seeds[state->J97];
-	if (uni < 0.0) {uni = uni + 1.0f;}
-	state->seeds[state->I97] = uni;
-	if (!state->I97) state->I97=97;
-	if (!state->J97) state->J97=97;
-	state->I97--;
-	state->J97--;
-	state->C = (float)  state->C - (float) HGPU_PRNG_RANMAR_CD;
-	if (state->C < 0.0) state->C = (float) state->C + (float) HGPU_PRNG_RANMAR_CM;
-	uni = uni - state->C;
-	if (uni < 0.0) uni = uni + 1.0f;
+    float uni = state->seeds[state->I97] - state->seeds[state->J97];
+    if (uni < 0.0) {uni = uni + 1.0f;}
+    state->seeds[state->I97] = uni;
+    if (!state->I97) state->I97=97;
+    if (!state->J97) state->J97=97;
+    state->I97--;
+    state->J97--;
+    state->C = (float)  state->C - (float) HGPU_PRNG_RANMAR_CD;
+    if (state->C < 0.0) state->C = (float) state->C + (float) HGPU_PRNG_RANMAR_CM;
+    uni = uni - state->C;
+    if (uni < 0.0) uni = uni + 1.0f;
 
-	return uni;
+    return uni;
 }
 
 static void
@@ -159,14 +159,14 @@ HGPU_PRNG_RANMAR_init_GPU(HGPU_GPU_context* context,void* PRNG_state,HGPU_PRNG_p
     if ((!PRNG_seeds) || (!PRNG_seed_table_float4) || ((!PRNG_randoms_double) && (!PRNG_randoms)))
         HGPU_error_message(HGPU_ERROR_NO_MEMORY,"could not allocate memory for randoms");
 
-    for (unsigned int i=0; i<(seeds_size>>1); i++) {
+    for (size_t i=0; i<(seeds_size>>1); i++) {
         PRNG_seeds[i].s[0] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_1;
         PRNG_seeds[i].s[1] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_1;
         PRNG_seeds[i].s[2] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_1;
         PRNG_seeds[i].s[3] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_1;
     }
 
-    for (unsigned int i=(seeds_size>>1); i<seeds_size; i++) {
+    for (size_t i=(seeds_size>>1); i<seeds_size; i++) {
         PRNG_seeds[i].s[0] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_2;
         PRNG_seeds[i].s[1] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_2;
         PRNG_seeds[i].s[2] = HGPU_PRNG_rand32bit() % HGPU_PRNG_RANMAR_init_2;
