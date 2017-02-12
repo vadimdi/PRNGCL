@@ -48,6 +48,7 @@
 
 #include <CL/cl.h>
 #include "platform.h"
+#include "../include/hgpu_types.h"
 #include "hgpucl_platforms.h"
 #include "hgpucl_devices.h"
 #include "hgpucl_context.h"

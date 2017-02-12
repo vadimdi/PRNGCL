@@ -173,6 +173,7 @@
     <ClInclude Include="..\include\hgpu_parameters.h" />
     <ClInclude Include="..\include\hgpu_string.h" />
     <ClInclude Include="..\include\hgpu_timer.h" />
+    <ClInclude Include="..\include\hgpu_types.h" />
     <ClInclude Include="..\PRNGCL.h" />
     <ClInclude Include="..\randomcl\hgpu_prng.h" />
     <ClInclude Include="..\randomcl\hgpu_prng_test.h" />

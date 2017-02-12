@@ -129,6 +129,9 @@
     <ClInclude Include="..\randomcl\hgpu_prng.h">
       <Filter>randomcl</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\hgpu_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\hgpucl\hgpucl.cpp">
