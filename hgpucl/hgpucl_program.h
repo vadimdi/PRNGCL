@@ -39,10 +39,7 @@
 #ifndef HGPUCL_PROGRAM_H
 #define HGPUCL_PROGRAM_H
 
-#include "platform.h"
-#include "hgpucl_context.h"
-#include "../include/hgpu_timer.h"
-#include "../include/hgpu_md5.h"
+#include "hgpucl.h"
 
              cl_program   HGPU_GPU_program_new(const char* source,HGPU_GPU_context* context);
              cl_program   HGPU_GPU_program_with_options_new(const char* source,const char* options,HGPU_GPU_context* context);

@@ -39,29 +39,8 @@
 #ifndef HGPUCL_KERNEL_H
 #define HGPUCL_KERNEL_H
 
-#include <CL/cl.h>
-#include "platform.h"
-#include "hgpucl_constants.h"
-#include "hgpucl_error.h"
-#include "../include/hgpu_string.h"
-#include "../include/hgpu_timer.h"
+#include "hgpucl.h"
 
-
-    // structure for kernel
-    typedef struct{
-                        cl_kernel   kernel;
-                              int   argument_id;                   // argument iterator
-                     unsigned int   work_dimensions;               // work dimensions
-                           size_t*  global_size;                   // global size
-                           size_t*  local_size;                    // local size
-                // profiling data __________________________
-                         cl_event   kernel_event;                  // event for kernel
-                         cl_ulong   kernel_start;                  // kernel last start time
-                         cl_ulong   kernel_finish;                 // kernel last finish time
-                           double   kernel_elapsed_time;           // total kernel execution time (in nanoseconds)
-                           double   kernel_elapsed_time_squared;   // total kernel execution time squared (in nanoseconds) - for deviation calculation
-                        long long   kernel_number_of_starts;       // total number of kernel starts - for deviation calculation
-    } HGPU_GPU_kernel;
 
                    void   HGPU_GPU_kernels_add(HGPU_GPU_kernel*** kernels,HGPU_GPU_kernel* kernel);
                    void   HGPU_GPU_kernels_delete(HGPU_GPU_kernel*** kernels);

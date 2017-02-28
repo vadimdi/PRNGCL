@@ -73,7 +73,7 @@ HGPU_GPU_platforms_delete(HGPU_GPU_platforms** platforms){
 HGPU_GPU_platforms*
 HGPU_GPU_platforms_get(void){
     cl_uint GPU_platforms_number = 0;
-	HGPU_GPU_error_message(clGetPlatformIDs(0,NULL,&GPU_platforms_number),"clGetPlatformIDs failed");
+    HGPU_GPU_error_message(clGetPlatformIDs(0,NULL,&GPU_platforms_number),"clGetPlatformIDs failed");
     if(!GPU_platforms_number) HGPU_GPU_error_message(HGPU_ERROR_NO_PLATFORM,"there are no any available OpenCL platforms");
 
     HGPU_GPU_platforms* result = HGPU_GPU_platforms_new(GPU_platforms_number);
@@ -111,7 +111,7 @@ void
 HGPU_GPU_platforms_select_by_vendor(HGPU_GPU_platforms** platforms,HGPU_GPU_vendor vendor){
     unsigned int platforms_number = HGPU_GPU_platforms_get_number(*platforms);
     if (!platforms_number) HGPU_GPU_error(HGPU_ERROR_NO_PLATFORM);
-    char infobuf[HGPU_GPU_MAX_STR_INFO_LENGHT];
+    char infobuf[HGPU_MAX_STR_INFO_LENGHT];
     cl_uint desired_platforms = 0;
     for(unsigned int i=0; i<platforms_number; i++){
         cl_platform_id GPU_platform = (*platforms)->platforms[i];
@@ -275,18 +275,18 @@ HGPU_GPU_version_min(HGPU_GPU_version version1, HGPU_GPU_version version2){
 // get short info on OpenCL platform
 char*
 HGPU_GPU_platform_get_info_short(cl_platform_id platform){
-    char* result = (char*) calloc(HGPU_GPU_MAX_STR_INFO_LENGHT,sizeof(char));
+    char* result = (char*) calloc(HGPU_MAX_STR_INFO_LENGHT,sizeof(char));
     char* name       = HGPU_GPU_platform_get_name(platform);
     char* vendor     = HGPU_GPU_platform_get_info_str(platform,CL_PLATFORM_VENDOR);
     char* profile    = HGPU_GPU_platform_get_info_str(platform,CL_PLATFORM_PROFILE);
     char* version    = HGPU_GPU_platform_get_info_str(platform,CL_PLATFORM_VERSION);
     char* extensions = HGPU_GPU_platform_get_info_str(platform,CL_PLATFORM_EXTENSIONS);
         unsigned int j = 0;
-        j  = sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"       Platform: %s\n",name);
-        j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"platform vendor: %s\n",vendor);
-        j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"        profile: %s\n",profile);
-        j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"        version: %s\n",version);
-        j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"     extensions: %s\n",extensions);
+        j  = sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"       Platform: %s\n",name);
+        j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"platform vendor: %s\n",vendor);
+        j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"        profile: %s\n",profile);
+        j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"        version: %s\n",version);
+        j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"     extensions: %s\n",extensions);
     free(extensions);
     free(version);
     free(profile);

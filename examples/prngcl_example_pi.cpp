@@ -37,7 +37,6 @@
  *****************************************************************************/
 
 #include "prngcl_example_pi.h"
-#include "../hgpucl/hgpucl.h"
 
 void
 HGPU_GPU_example_pi(int argc, char** argv){

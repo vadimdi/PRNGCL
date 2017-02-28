@@ -39,24 +39,7 @@
 #ifndef HGPUCL_PLATFORMS_H
 #define HGPUCL_PLATFORMS_H
 
-#include <CL/cl.h>
-#include "platform.h"
-#include "hgpucl_constants.h"
-#include "../include/hgpu_string.h"
-#include "../include/hgpu_enum.h"
-#include "../include/hgpu_error.h"
-#include "hgpucl_error.h"
-
-    // structure for arrays of platforms
-    typedef struct{
-                   cl_platform_id*  platforms;
-                     unsigned int   number_of_platforms;
-    } HGPU_GPU_platforms;
-
-    typedef struct{
-                     unsigned int   major;
-                     unsigned int   minor;
-    } HGPU_GPU_version;
+#include "hgpucl.h"
 
      HGPU_GPU_platforms*  HGPU_GPU_platforms_new(unsigned int number_of_platforms);
                    void   HGPU_GPU_platforms_delete(HGPU_GPU_platforms** platforms);

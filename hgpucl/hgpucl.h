@@ -45,18 +45,17 @@
 #define HGPU_max(a,b) ((a) > (b)) ? (a) : (b)
 #endif
 
-
 #include <CL/cl.h>
-#include "platform.h"
-#include "../include/hgpu_types.h"
+#include "../include/hgpu.h"
+#include "hgpucl_constants.h"
+#include "hgpucl_error.h"
+#include "hgpucl_structs.h"
 #include "hgpucl_platforms.h"
+#include "hgpucl_kernel.h"
+#include "hgpucl_buffer.h"
 #include "hgpucl_devices.h"
 #include "hgpucl_context.h"
 #include "hgpucl_program.h"
-#include "../include/hgpu_io.h"
-#include "../include/hgpu_md5.h"
-#include "../include/hgpu_timer.h"
-#include "../include/hgpu_parameters.h"
 #include "../randomcl/hgpu_prng.h"
 
                    void   HGPU_GPU_test(int argc, char** argv);

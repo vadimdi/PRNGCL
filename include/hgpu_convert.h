@@ -38,7 +38,7 @@
 #ifndef HGPU_CONVERT_H
 #define HGPU_CONVERT_H
 
-#include "../hgpucl/platform.h"
+#include "hgpu.h"
 
     typedef union{                                  // Uint <---> Float converter
                      unsigned int   uint_value[1];

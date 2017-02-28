@@ -205,7 +205,7 @@ void
 HGPU_GPU_devices_select_by_vendor(HGPU_GPU_devices** devices,HGPU_GPU_vendor vendor){
     unsigned int number_of_devices = HGPU_GPU_devices_get_number(*devices);
     if (!number_of_devices) HGPU_GPU_error(HGPU_ERROR_NO_DEVICE);
-    char infobuf[HGPU_GPU_MAX_STR_INFO_LENGHT];
+    char infobuf[HGPU_MAX_STR_INFO_LENGHT];
     cl_uint desired_devices = 0;
     for(unsigned int i=0; i<number_of_devices; i++){
         cl_device_id GPU_device = (*devices)->devices[i];
@@ -534,20 +534,20 @@ HGPU_GPU_device_get_name(cl_device_id device){
 // get short info on OpenCL device
 char*
 HGPU_GPU_device_get_info_short(cl_device_id device){
-    char* result = (char*) calloc(HGPU_GPU_MAX_STR_INFO_LENGHT,sizeof(char));
+    char* result = (char*) calloc(HGPU_MAX_STR_INFO_LENGHT,sizeof(char));
     char* name       = HGPU_GPU_device_get_name(device);
     char* vendor     = HGPU_GPU_device_get_info_str(device,CL_DEVICE_VENDOR);
     char* profile    = HGPU_GPU_device_get_info_str(device,CL_DEVICE_PROFILE);
     char* version    = HGPU_GPU_device_get_info_str(device,CL_DEVICE_VERSION);
     char* extensions = HGPU_GPU_device_get_info_str(device,CL_DEVICE_EXTENSIONS);
     unsigned int j = 0;
-    j  = sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"         Device: %s\n",name);
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"device's vendor: %s\n",vendor);
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"        profile: %s\n",profile);
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"        version: %s\n",version);
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"     extensions: %s\n",extensions);
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"max alloc. size: %lu\n",HGPU_GPU_device_get_info_uint(device,CL_DEVICE_MAX_MEM_ALLOC_SIZE));
-    j += sprintf_s(result+j,HGPU_GPU_MAX_STR_INFO_LENGHT-j,"          index: [%u] [%u]\n",HGPU_GPU_device_get_index_of(device),HGPU_GPU_device_get_index_of_on_platform(device));
+    j  = sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"         Device: %s\n",name);
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"device's vendor: %s\n",vendor);
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"        profile: %s\n",profile);
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"        version: %s\n",version);
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"     extensions: %s\n",extensions);
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"max alloc. size: %lu\n",HGPU_GPU_device_get_info_uint(device,CL_DEVICE_MAX_MEM_ALLOC_SIZE));
+    j += sprintf_s(result+j,HGPU_MAX_STR_INFO_LENGHT-j,"          index: [%u] [%u]\n",HGPU_GPU_device_get_index_of(device),HGPU_GPU_device_get_index_of_on_platform(device));
     free(extensions);
     free(version);
     free(profile);
@@ -621,8 +621,8 @@ HGPU_GPU_device_get_next(HGPU_GPU_devices* devices,cl_device_id device){
 bool
 HGPU_GPU_device_check_double_precision(cl_device_id device){
     bool result = false;
-    char device_output[HGPU_GPU_MAX_STR_INFO_LENGHT];
-    HGPU_GPU_error_message(clGetDeviceInfo(device,CL_DEVICE_EXTENSIONS,HGPU_GPU_MAX_STR_INFO_LENGHT,&device_output,NULL),"clGetDeviceInfo failed");
+    char device_output[HGPU_MAX_STR_INFO_LENGHT];
+    HGPU_GPU_error_message(clGetDeviceInfo(device,CL_DEVICE_EXTENSIONS,HGPU_MAX_STR_INFO_LENGHT,&device_output,NULL),"clGetDeviceInfo failed");
     HGPU_string_to_lowercase(device_output);
     if (strstr(device_output,"cl_khr_fp64")) result = true;
     return result;

@@ -132,8 +132,8 @@ HGPU_string_join(char** str_dest,char* str_src){
 
 char*
 HGPU_string_get_from_integer(int value){
-    char buffer[HGPU_GPU_MAX_STR_INFO_LENGHT];
-    int len = sprintf_s(buffer,HGPU_GPU_MAX_STR_INFO_LENGHT,"%d",value) + 1;
+    char buffer[HGPU_MAX_STR_INFO_LENGHT];
+    int len = sprintf_s(buffer,HGPU_MAX_STR_INFO_LENGHT,"%d",value) + 1;
     char* result = (char*) calloc(len,sizeof(char));
     if (!result) {   // error - can not allocate memory
         HGPU_error_note(HGPU_ERROR_NO_MEMORY,NULL);
@@ -146,8 +146,8 @@ HGPU_string_get_from_integer(int value){
 
 char*
 HGPU_string_get_from_double(double value){
-    char buffer[HGPU_GPU_MAX_STR_INFO_LENGHT];
-    int len = sprintf_s(buffer,HGPU_GPU_MAX_STR_INFO_LENGHT,"%.16e",value) + 1;
+    char buffer[HGPU_MAX_STR_INFO_LENGHT];
+    int len = sprintf_s(buffer,HGPU_MAX_STR_INFO_LENGHT,"%.16e",value) + 1;
     char* result = (char*) calloc(len,sizeof(char));
     if (!result) {   // error - can not allocate memory
         HGPU_error_note(HGPU_ERROR_NO_MEMORY,NULL);

@@ -48,14 +48,14 @@ HGPU_GPU_context_new(cl_device_id device,HGPU_GPU_debug debug_flags){
 
     cl_int GPU_error;
 
-	// create context
+    // create context
     HGPU_GPU_context* context = (HGPU_GPU_context*) calloc(1,sizeof(HGPU_GPU_context));
 
     context->number_of_programs = 0;
     context->device      = device;
     context->debug_flags = debug_flags;
     context->device_info = HGPU_GPU_device_get_info(context->device);
-	context->context     = clCreateContext(NULL,1,&device,NULL, NULL, &GPU_error);
+    context->context     = clCreateContext(NULL,1,&device,NULL, NULL, &GPU_error);
     HGPU_GPU_error_message(GPU_error,"clCreateContext failed");
     context->program     = NULL;
     context->kernel      = NULL;
@@ -65,7 +65,7 @@ HGPU_GPU_context_new(cl_device_id device,HGPU_GPU_debug debug_flags){
     // for OpenCL 1.0, 1.1 or 1.2
     cl_command_queue_properties profiling_properties = 0;
     if(context->debug_flags.profiling) profiling_properties |= (CL_QUEUE_PROFILING_ENABLE); // enable profiling for debuging
-	context->queue = clCreateCommandQueue(context->context,context->device,profiling_properties,&GPU_error);
+    context->queue = clCreateCommandQueue(context->context,context->device,profiling_properties,&GPU_error);
 #else
     // for OpenCL 2.0
     cl_queue_properties profiling_properties[] = { CL_QUEUE_PROPERTIES, (context->debug_flags.profiling) ?
@@ -487,7 +487,7 @@ HGPU_GPU_context_print_detailed_report(HGPU_GPU_context* context){
                     printf("\t device to host %u times:\n\t\t elapsed time: %f (+/-%f) ms (%f Mbytes/sec)\n",
                         buffer->buffer_read_number_of,elapsed_time_read.mean*1.e-6,elapsed_time_read.deviation*1.e-6,HGPU_convert_B_to_MBS(buffer_size,elapsed_time_read.mean));
                 }
-	        }
+            }
         }
     }
     printf("--------------------------------------------------------\n");

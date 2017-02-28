@@ -41,18 +41,18 @@
 // convert (unsigned int) to (float)
 float
 HGPU_convert_uint_to_float(unsigned int value){
-	HGPU_convert_uint_and_float result;
-	result.uint_value[0]=value;
-	return result.float_value;
+    HGPU_convert_uint_and_float result;
+    result.uint_value[0]=value;
+    return result.float_value;
 }
 
 // convert (unsigned int) to (double)
 double
 HGPU_convert_uint_to_double(unsigned int value)
 {
-	HGPU_convert_uint_and_float result;
-	result.uint_value[0]=value;
-	return (double) result.float_value;
+    HGPU_convert_uint_and_float result;
+    result.uint_value[0]=value;
+    return (double) result.float_value;
 }
 
 // convert (unsigned int high and low) to (double)
@@ -68,15 +68,15 @@ HGPU_convert_uint2_to_double(unsigned int value_low,unsigned int value_high){
 // convert (float) to (uint)
 unsigned int
 HGPU_convert_float_to_uint(float value){
-	HGPU_convert_uint_and_float result;
-	result.float_value = value;
-	return result.uint_value[0];
+    HGPU_convert_uint_and_float result;
+    result.float_value = value;
+    return result.uint_value[0];
 }
 
 // convert (float) to (double)
 double
 HGPU_convert_float_to_double(float value){
-	return (double) value;
+    return (double) value;
 }
 
 
@@ -99,7 +99,7 @@ HGPU_convert_double_to_uint_low(double x){
 // convert (double) to (float)
 float
 HGPU_convert_double_to_float(double value){
-	return (float) value;
+    return (float) value;
 }
 
 // convert (bytes) to (kilobytes)

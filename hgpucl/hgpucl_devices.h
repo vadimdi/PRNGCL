@@ -39,30 +39,7 @@
 #ifndef HGPUCL_DEVICES_H
 #define HGPUCL_DEVICES_H
 
-#include "hgpucl_platforms.h"
-#include "../include/hgpu_string.h"
-#include "../include/hgpu_parameters.h"
-
-    // structure for arrays of devices
-    typedef struct{
-                     cl_device_id*  devices;
-                     unsigned int   number_of_devices;
-    } HGPU_GPU_devices;
-
-    // structure for device info
-    typedef struct{
-                         cl_ulong   global_memory_size;     // CL_DEVICE_GLOBAL_MEM_SIZE
-                         cl_ulong   local_memory_size;      // CL_DEVICE_LOCAL_MEM_SIZE
-                         cl_ulong   max_constant_size;      // CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE
-                         cl_ulong   max_memory_size;        // CL_DEVICE_MAX_MEM_ALLOC_SIZE
-                           size_t   max_memory_width;       // CL_DEVICE_IMAGE2D_MAX_WIDTH
-                           size_t   max_memory_height;      // CL_DEVICE_IMAGE2D_MAX_HEIGHT
-                     unsigned int   max_compute_units;      // CL_DEVICE_MAX_COMPUTE_UNITS
-                           size_t   max_workgroup_size;     // max(CL_DEVICE_MAX_WORK_ITEM_SIZES)
-                           size_t   memory_align_factor;    // memory align factor for buffers (=CL_DEVICE_MAX_COMPUTE_UNITS)
-                  HGPU_GPU_vendor   platform_vendor;        // platform vendor
-                  HGPU_GPU_vendor   device_vendor;          // device vendor
-    } HGPU_GPU_device_info;
+#include "hgpucl.h"
 
        HGPU_GPU_devices*  HGPU_GPU_devices_new(unsigned int number_of_devices);
        HGPU_GPU_devices*  HGPU_GPU_devices_new_empty(void);

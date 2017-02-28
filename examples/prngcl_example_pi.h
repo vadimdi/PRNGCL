@@ -39,6 +39,8 @@
 #ifndef PRNGCL_EXAMPLE_PI_H
 #define PRNGCL_EXAMPLE_PI_H
 
+#include "../hgpucl/hgpucl.h"
+
 #define EXAMPLE_SRC  "examples/prngcl_example_pi.cl"
 
                              void   HGPU_GPU_example_pi(int argc, char** argv);

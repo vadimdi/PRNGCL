@@ -304,7 +304,7 @@ HGPU_parameters_get_from_inf_file(int inf_index){
     char* buffer_inf = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!file_name) || (!buffer_inf)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
 
     HGPU_parameter** result = HGPU_parameters_get_from_file(file_name);
@@ -321,7 +321,7 @@ HGPU_parameters_write_to_inf_file(HGPU_parameter** parameters,const unsigned cha
     char* buffer_inf = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!file_name) || (!buffer_inf)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&file_name,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
     char* inf_data = HGPU_parameters_put(parameters);
     HGPU_io_file_write(file_name,inf_data);
@@ -454,9 +454,9 @@ HGPU_parameter_get_from_file_with_path(FILE** stream,const char* file_path,const
 HGPU_parameter*
 HGPU_parameter_get_from_file(FILE** stream,const char* file_name){
     HGPU_parameter* result = NULL;
-	FILE* file_stream = NULL;
-	fopen_s(&file_stream,file_name,"r");
-	if(file_stream){
+    FILE* file_stream = NULL;
+    fopen_s(&file_stream,file_name,"r");
+    if(file_stream){
         (*stream) = file_stream;
         result = HGPU_parameter_get_from_file_next(stream);
         while ((result) && (!result->parameter)) result = HGPU_parameter_get_from_file_next(stream);
@@ -468,9 +468,9 @@ HGPU_parameter_get_from_file(FILE** stream,const char* file_name){
 HGPU_parameter*
 HGPU_parameter_get_from_file_next(FILE** stream){
     HGPU_parameter* result = NULL;
-    char buffer[HGPU_GPU_MAX_FILE_READ_BUFFER];
+    char buffer[HGPU_MAX_FILE_READ_BUFFER];
     if (!feof(*stream)) {
-	    if (fgets(buffer,HGPU_GPU_MAX_FILE_READ_BUFFER,*stream)!=NULL)
+        if (fgets(buffer,HGPU_MAX_FILE_READ_BUFFER,*stream)!=NULL)
             result = HGPU_parameter_get(buffer);
         if (!result) result = HGPU_parameter_new();
     } else
@@ -562,21 +562,21 @@ HGPU_parameter_get_from_environment(const char* parameter_name){
     if (!parameter_name) return result;
     char* p_name = (char*) parameter_name;
     if (!strstr(p_name,HGPU_ENVIRONMENT_PREFIX)) {
-        p_name = (char*) calloc(HGPU_GPU_MAX_ENVIRONMENT_LENGTH,sizeof(char));
+        p_name = (char*) calloc(HGPU_MAX_ENVIRONMENT_LENGTH,sizeof(char));
         if (!p_name) HGPU_error(HGPU_ERROR_NO_MEMORY);
-        sprintf_s(p_name,HGPU_GPU_MAX_ENVIRONMENT_LENGTH,"%s%s",HGPU_ENVIRONMENT_PREFIX,parameter_name);
+        sprintf_s(p_name,HGPU_MAX_ENVIRONMENT_LENGTH,"%s%s",HGPU_ENVIRONMENT_PREFIX,parameter_name);
     }
 
     char* parameter = NULL;
 #ifdef _WIN32
-    size_t parameter_length = HGPU_GPU_MAX_ENVIRONMENT_LENGTH;
+    size_t parameter_length = HGPU_MAX_ENVIRONMENT_LENGTH;
 #endif
     _dupenv_s(&parameter,&parameter_length,p_name);
     if ((parameter) && (strlen(p_name)>strlen(HGPU_ENVIRONMENT_PREFIX))) {
-        char* param = (char*) calloc(HGPU_GPU_MAX_ENVIRONMENT_LENGTH,sizeof(char));
+        char* param = (char*) calloc(HGPU_MAX_ENVIRONMENT_LENGTH,sizeof(char));
         if (!param) HGPU_error(HGPU_ERROR_NO_MEMORY);
         char* param_name = (char*) p_name + strlen(HGPU_ENVIRONMENT_PREFIX);
-        sprintf_s(param,HGPU_GPU_MAX_ENVIRONMENT_LENGTH,"%s=%s",param_name,parameter);
+        sprintf_s(param,HGPU_MAX_ENVIRONMENT_LENGTH,"%s=%s",param_name,parameter);
         result = HGPU_parameter_get(param);
         free(param);
     }

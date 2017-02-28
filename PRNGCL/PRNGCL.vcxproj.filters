@@ -93,9 +93,6 @@
     <ClInclude Include="..\hgpucl\hgpucl_program.h">
       <Filter>HGPUCL\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\hgpucl\platform.h">
-      <Filter>HGPUCL</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\hgpu_convert.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -130,6 +127,21 @@
       <Filter>randomcl</Filter>
     </ClInclude>
     <ClInclude Include="..\include\hgpu_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_constants.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hgpucl\hgpucl_structs.h">
+      <Filter>HGPUCL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hgpu_structs.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

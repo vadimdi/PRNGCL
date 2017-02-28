@@ -38,11 +38,7 @@
 #ifndef HGPU_PRNG_H
 #define HGPU_PRNG_H
 
-#include "../include/hgpu_enum.h"
-#include "../include/hgpu_error.h"
-#include "../include/hgpu_parameters.h"
-#include "../hgpucl/hgpucl_context.h"
-#include "../hgpucl/hgpucl_program.h"
+#include "../hgpucl/hgpucl.h"
 #include "hgpu_prng_test.h"
 
 
@@ -171,7 +167,7 @@ extern const HGPU_PRNG_description* HGPU_PRNG_default;
                              char*  HGPU_PRNG_make_header(HGPU_PRNG* prng);
                              void   HGPU_PRNG_write_results(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
                              void   HGPU_PRNG_write_output_text(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
-                             void   HGPU_PRNG_write_output_binary(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
+//                             void   HGPU_PRNG_write_output_binary(HGPU_GPU_context* context,HGPU_PRNG* prng,const char* file_path,const char* file_name);
 
                      unsigned int   HGPU_PRNG_test(HGPU_GPU_context* context,HGPU_parameter** parameters,const HGPU_PRNG_description* prng_descr,
                                                    unsigned int randseries,HGPU_precision precision,unsigned int number,double test_value);

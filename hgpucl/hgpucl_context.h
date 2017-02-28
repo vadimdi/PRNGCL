@@ -39,45 +39,9 @@
 #ifndef HGPUCL_CONTEXT_H
 #define HGPUCL_CONTEXT_H
 
-#include <CL/cl.h>
-#include "platform.h"
-#include "hgpucl_error.h"
-#include "hgpucl_devices.h"
-#include "hgpucl_kernel.h"
-#include "hgpucl_buffer.h"
-#include "../include/hgpu_io.h"
-#include "../include/hgpu_convert.h"
-#include "../include/hgpu_timer.h"
+#include "hgpucl.h"
 
-    // structure for debug flags
-    typedef struct{
-                           size_t   max_workgroup_size; // maximum workgroup size for kernels
-                             bool   wait_for_keypress;
-                             bool   profiling;
-                             bool   brief_report;
-                             bool   show_stage;
-                             bool   local_run;
-                             bool   rebuild_binaries;
-                             bool   warning_error;
-                             bool   no_cache;
-    } HGPU_GPU_debug;
-
-    const HGPU_GPU_debug HGPU_GPU_debug_default = {0, false, false, false, false, false, false, false, false};
-
-
-    // structure for context
-    typedef struct{
-                     cl_device_id   device;
-             HGPU_GPU_device_info   device_info;
-                       cl_context   context;
-                 cl_command_queue   queue;
-                   HGPU_GPU_debug   debug_flags;
-                     unsigned int   number_of_programs;
-                       cl_program*  program;
-                  HGPU_GPU_kernel** kernel;
-                  HGPU_GPU_buffer** buffer;
-    } HGPU_GPU_context;
-
+    const HGPU_GPU_debug HGPU_GPU_debug_default = { 0, false, false, false, false, false, false, false, false };
 
        HGPU_GPU_context*  HGPU_GPU_context_new(cl_device_id device,HGPU_GPU_debug debug_flags);
                    void   HGPU_GPU_context_delete(HGPU_GPU_context** context);
@@ -118,7 +82,7 @@
                    char*  HGPU_GPU_context_kernel_get_name(HGPU_GPU_context* context,unsigned int kernel_id);
            unsigned int   HGPU_GPU_context_kernel_get_args_number(HGPU_GPU_context* context,unsigned int kernel_id);
            unsigned int   HGPU_GPU_context_kernel_get_id(HGPU_GPU_context* context,const char* kernel_name);
-        HGPU_GPU_kernel*  HGPU_GPU_context_kernel_get_by_id(HGPU_GPU_context* context,unsigned int kernel_id);
+//        HGPU_GPU_kernel*  HGPU_GPU_context_kernel_get_by_id(HGPU_GPU_context* context,unsigned int kernel_id);
 
                    void   HGPU_GPU_context_print_memory_utilized(HGPU_GPU_context* context);
                    void   HGPU_GPU_context_print_detailed_report(HGPU_GPU_context* context);

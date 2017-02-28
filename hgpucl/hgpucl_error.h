@@ -39,9 +39,7 @@
 #ifndef HGPUCL_ERROR_H
 #define HGPUCL_ERROR_H
 
-#include <CL/cl.h>
-#include "platform.h"
-#include "../include/hgpu_error.h"
+#include "hgpucl.h"
 
                     void  HGPU_GPU_error(int error_code);
                     void  HGPU_GPU_error_message(int error_code,const char* error_message);

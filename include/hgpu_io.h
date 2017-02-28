@@ -38,10 +38,11 @@
 #ifndef HGPUCL_IO_H
 #define HGPUCL_IO_H
 
-#include "../hgpucl/platform.h"
-#include "hgpu_error.h"
-#include "hgpu_string.h"
-#include "../hgpucl/hgpucl_constants.h"
+#include "hgpu.h"
+//#include "../hgpucl/platform.h"
+//#include "hgpu_error.h"
+//#include "hgpu_string.h"
+//#include "../hgpucl/hgpucl_constants.h"
 
 
             extern char*  HGPU_io_path_working;
@@ -57,7 +58,7 @@
                    char*  HGPU_io_file_read(const char* file_name);
                    void   HGPU_io_file_read_add(char** source, const char* file_name);
                    char*  HGPU_io_file_read_with_path(const char* file_path,const char* file_name);
-                   void   HGPU_io_file_read_add_path(char** source,const char* file_path,const char* file_name);
+//                   void   HGPU_io_file_read_add_path(char** source,const char* file_path,const char* file_name);
                    void   HGPU_io_file_write(const char* file_name,const char* buffer);
                    void   HGPU_io_file_write_with_path(const char* file_path,const char* file_name,const char* buffer);
                    void   HGPU_io_file_write_binary(const char* file_name,const unsigned char* buffer,const size_t bytes_to_write);

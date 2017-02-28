@@ -38,15 +38,7 @@
 #ifndef HGPU_ENUM_H
 #define HGPU_ENUM_H
 
-#include "../hgpucl/platform.h"
-#include "hgpu_string.h"
-
-    typedef enum enum_HGPU_precision {
-            HGPU_precision_none   = 0,          // none
-            HGPU_precision_single = 1,          // float  (32 bit)
-            HGPU_precision_double = 2,          // double (64 bit)
-            HGPU_precision_mixed  = 3           // mixed precision (32 bit + 32 bit)
-    } HGPU_precision;
+#include "hgpu.h"
 
     typedef enum enum_HGPU_storage_type {
             HGPU_storage_none,                  // default unknown storage type

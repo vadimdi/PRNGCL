@@ -65,14 +65,14 @@ HGPU_io_path_get_root(void){
     char* j_cur  = HGPU_io_path_root;
     bool flag_found = false;
     while((!flag_found)&&(j_cur)){
-        sprintf_s(HGPU_io_path_root,HGPU_FILENAME_MAX,"%s%s",HGPU_io_path_current,HGPU_GPU_PATH_SEPARATOR);
-        j_cur = strstr(j_prev+1,HGPU_GPU_PATH_SEPARATOR);
+        sprintf_s(HGPU_io_path_root,HGPU_FILENAME_MAX,"%s%s",HGPU_io_path_current, HGPU_PATH_SEPARATOR_LINUX);
+        j_cur = strstr(j_prev+1, HGPU_PATH_SEPARATOR_LINUX);
         if((j_cur) && (j_cur>j_prev)) {
             j_prev=j_cur;
             sprintf_s(j_cur+1,HGPU_FILENAME_MAX-(j_cur+1-HGPU_io_path_root),"%s",HGPU_GPU_ROOT_FILE);
 
             if (HGPU_io_file_check_existence(HGPU_io_path_root)) {
-                sprintf_s(j_cur,HGPU_FILENAME_MAX-(j_cur+1-HGPU_io_path_root),"%s",HGPU_GPU_PATH_SEPARATOR);
+                sprintf_s(j_cur,HGPU_FILENAME_MAX-(j_cur+1-HGPU_io_path_root),"%s", HGPU_PATH_SEPARATOR_LINUX);
                 flag_found = true;
             }
         }
@@ -84,20 +84,20 @@ HGPU_io_path_get_root(void){
     return HGPU_io_path_root;
 }
 
-// setup HGPU_GPU_PATH_SEPARATOR as last symbol in path
+// setup HGPU_PATH_SEPARATOR_LINUX as last symbol in path
 void
 HGPU_io_path_set_separator(char** path,size_t path_length){
     if ((!path) || (!(*path)) || (!strlen(*path))) return;
     char** path_new = path;
     size_t path_length_old = strlen(*path_new);
     char* path_last_symbol = (char*) (*path_new)+path_length_old;
-    char* j_cur  = strstr(path_last_symbol - strlen(HGPU_GPU_PATH_SEPARATOR), HGPU_GPU_PATH_SEPARATOR);
-    char* j_cur2 = strstr(path_last_symbol - strlen(HGPU_GPU_PATH_SEPARATOR2),HGPU_GPU_PATH_SEPARATOR2);
+    char* j_cur  = strstr(path_last_symbol - strlen(HGPU_PATH_SEPARATOR_LINUX), HGPU_PATH_SEPARATOR_LINUX);
+    char* j_cur2 = strstr(path_last_symbol - strlen(HGPU_PATH_SEPARATOR_WINDOWS), HGPU_PATH_SEPARATOR_WINDOWS);
     if ((!j_cur) && (!j_cur2)) {
-        size_t new_path_length = path_length_old+strlen(HGPU_GPU_PATH_SEPARATOR)+1;
+        size_t new_path_length = path_length_old+strlen(HGPU_PATH_SEPARATOR_LINUX)+1;
         if (new_path_length>path_length) HGPU_string_resize(path_new,new_path_length); // resize path
         char* path_last_symbol_new = (char*) (*path_new)+path_length_old;
-        sprintf_s(path_last_symbol_new,new_path_length,"%s",HGPU_GPU_PATH_SEPARATOR);
+        sprintf_s(path_last_symbol_new,new_path_length,"%s", HGPU_PATH_SEPARATOR_LINUX);
         *path = *path_new;
     }
 #ifdef _WIN32
@@ -137,7 +137,7 @@ HGPU_io_file_check_existence(const char* file_name){
 // check file existance with path
 bool
 HGPU_io_file_check_existence_with_path(const char* file_path,const char* file_name){
-	FILE * is_file;
+    FILE * is_file;
     bool flag = false;
         if (!file_name) return flag;
         char* buffer = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
@@ -212,7 +212,7 @@ HGPU_io_file_write_binary(const char* file_name,const unsigned char* buffer,cons
 // file read and add to existing buffer
 void
 HGPU_io_file_read_add(char** source,const char* file_name){
-	char* temporary_source = HGPU_io_file_read(file_name);
+    char* temporary_source = HGPU_io_file_read(file_name);
     if (!temporary_source) return;
     size_t source_length = strlen(*source);
     size_t temporary_source_length = strlen(temporary_source);
@@ -260,16 +260,16 @@ HGPU_io_file_read_add_with_path(char** source,const char* file_path,const char* 
 // delete .inf and .bin files
 int
 HGPU_io_inf_file_delete(int inf_index){
-	int err;
+    int err;
     char* buffer_path = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     char* buffer_inf  = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!buffer_inf) || (!buffer_path)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     HGPU_io_path_join_filename(&buffer_path,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
     err = remove(buffer_path);      // kill .inf-file
     if (!err){
-		sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
+        sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
         HGPU_io_path_join_filename(&buffer_path,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
         err = remove(buffer_path);  // kill .bin-file
     }
@@ -289,22 +289,22 @@ HGPU_io_inf_file_delete_all(void){
 // rename .inf and .bin files
 int
 HGPU_io_inf_file_rename(int inf_index_old,int inf_index_new){
-	int err = 0;
+    int err = 0;
     char* buffer_path_old = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     char* buffer_path_new = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     char* buffer_inf_old  = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     char* buffer_inf_new  = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!buffer_path_old) || (!buffer_path_new) || (!buffer_inf_old) || (!buffer_inf_new)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	sprintf_s(buffer_inf_old,HGPU_FILENAME_MAX,"program%u.inf",inf_index_old);
+    sprintf_s(buffer_inf_old,HGPU_FILENAME_MAX,"program%u.inf",inf_index_old);
     HGPU_io_path_join_filename(&buffer_path_old,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf_old);
-	sprintf_s(buffer_inf_new,HGPU_FILENAME_MAX,"program%u.inf",inf_index_new);
+    sprintf_s(buffer_inf_new,HGPU_FILENAME_MAX,"program%u.inf",inf_index_new);
     HGPU_io_path_join_filename(&buffer_path_new,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf_new);
     err = rename(buffer_path_old,buffer_path_new);    // rename .inf-file
     if (!err) {
-    	sprintf_s(buffer_inf_old,HGPU_FILENAME_MAX,"program%u.bin",inf_index_old);
+        sprintf_s(buffer_inf_old,HGPU_FILENAME_MAX,"program%u.bin",inf_index_old);
         HGPU_io_path_join_filename(&buffer_path_old,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf_old);
-	    sprintf_s(buffer_inf_new,HGPU_FILENAME_MAX,"program%u.bin",inf_index_new);
+        sprintf_s(buffer_inf_new,HGPU_FILENAME_MAX,"program%u.bin",inf_index_new);
         HGPU_io_path_join_filename(&buffer_path_new,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf_new);
         err = rename(buffer_path_old,buffer_path_new);    // rename .inf-file
     }
@@ -333,7 +333,7 @@ bool
 HGPU_io_inf_file_check_existence(int inf_index){
     bool result = false;
     char buffer_inf[HGPU_FILENAME_MAX];
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.inf",inf_index);
     result = HGPU_io_file_check_existence_with_path(HGPU_io_path_inf,buffer_inf);
     return result;
 }
@@ -346,7 +346,7 @@ bool
 HGPU_io_bin_file_check_existence(int inf_index){
     bool result = false;
     char buffer_inf[HGPU_FILENAME_MAX];
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
     result = HGPU_io_file_check_existence_with_path(HGPU_io_path_inf,buffer_inf);
     return result;
 }
@@ -360,7 +360,7 @@ HGPU_io_bin_file_read(int inf_index,size_t* binary_size){
     char* buffer_inf = (char*) calloc(HGPU_FILENAME_MAX,sizeof(char));
     if ((!buffer_bin) || (!buffer_inf)) HGPU_error(HGPU_ERROR_NO_MEMORY);
 
-	sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
+    sprintf_s(buffer_inf,HGPU_FILENAME_MAX,"program%u.bin",inf_index);
     HGPU_io_path_join_filename(&buffer_bin,HGPU_FILENAME_MAX,HGPU_io_path_inf,buffer_inf);
     if (HGPU_io_file_check_existence(buffer_bin)) {
         fopen_s(&file_to_read,buffer_bin,"rb");

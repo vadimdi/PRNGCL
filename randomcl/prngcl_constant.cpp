@@ -77,7 +77,7 @@ HGPU_PRNG_CONSTANT_produce_one_uint_CPU(void* PRNG_state){
 static double
 HGPU_PRNG_CONSTANT_produce_one_double_CPU(void* PRNG_state){
     double y = (double) HGPU_PRNG_CONSTANT_produce_one_uint_CPU(PRNG_state);
-	return (y / HGPU_PRNG_CONSTANT_m);
+    return (y / HGPU_PRNG_CONSTANT_m);
 }
 
 static void

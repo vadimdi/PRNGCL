@@ -38,9 +38,7 @@
 #ifndef HGPUCL_TIMER_H
 #define HGPUCL_TIMER_H
 
-#include "../hgpucl/platform.h"
-#include "../hgpucl/hgpucl_constants.h"
-#include "hgpu_string.h"
+#include "hgpu.h"
 
 #ifdef SAFE_LINUX_TIMER
 #define HGPU_timer time_t

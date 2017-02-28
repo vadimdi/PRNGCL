@@ -168,20 +168,20 @@ HGPU_GPU_buffer_init(HGPU_GPU_buffer*** buffers,cl_context context,void* host_pt
     buffer->host_ptr = host_ptr_to_buffer;
 
     cl_mem clbuffer = NULL;
-	cl_mem_flags flags = 0;
-	switch (buffer_type) {
-		// CL_MEM_USE_HOST_PTR
-		// CL_MEM_ALLOC_HOST_PTR
-		//
-		case HGPU_GPU_buffer_type_input:	{ flags = CL_MEM_READ_ONLY  | CL_MEM_COPY_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
-		case HGPU_GPU_buffer_type_constant: { flags = CL_MEM_READ_ONLY  | CL_MEM_COPY_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
-		case HGPU_GPU_buffer_type_io:		{ flags = CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR | CL_MEM_ALLOC_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
-		case HGPU_GPU_buffer_type_output:	{ flags = CL_MEM_WRITE_ONLY;                        break;} // 
-		case HGPU_GPU_buffer_type_global:	{ flags = CL_MEM_READ_WRITE;                        break;}
+    cl_mem_flags flags = 0;
+    switch (buffer_type) {
+        // CL_MEM_USE_HOST_PTR
+        // CL_MEM_ALLOC_HOST_PTR
+        //
+        case HGPU_GPU_buffer_type_input:	{ flags = CL_MEM_READ_ONLY  | CL_MEM_COPY_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
+        case HGPU_GPU_buffer_type_constant: { flags = CL_MEM_READ_ONLY  | CL_MEM_COPY_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
+        case HGPU_GPU_buffer_type_io:		{ flags = CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR | CL_MEM_ALLOC_HOST_PTR; break;} // CL_MEM_COPY_HOST_PTR - or - CL_MEM_USE_HOST_PTR
+        case HGPU_GPU_buffer_type_output:	{ flags = CL_MEM_WRITE_ONLY;                        break;} // 
+        case HGPU_GPU_buffer_type_global:	{ flags = CL_MEM_READ_WRITE;                        break;}
         case HGPU_GPU_buffer_type_local:    { break;}
         case HGPU_GPU_buffer_type_uav:      { break;}
         case HGPU_GPU_buffer_type_none:     { break;}
-	}
+    }
     buffer->buffer_type    = buffer_type;
     buffer->size           = buffer_elements;
     buffer->sizeof_element = sizeof_element;
@@ -212,7 +212,7 @@ void*
 HGPU_GPU_buffer_map(HGPU_GPU_buffer* buffer,cl_command_queue queue){
     void* result = HGPU_GPU_buffer_map_async(buffer,queue);
     HGPU_GPU_buffer_wait_for_event(&buffer->buffer_read_event);
-	return result;
+    return result;
 }
 
 // buffer map (asynchronous)
@@ -232,7 +232,7 @@ HGPU_GPU_buffer_map_async(HGPU_GPU_buffer* buffer,cl_command_queue queue){
     buffer->buffer_read_event = buffer_event;
     buffer->buffer_read_number_of++;
     buffer->mapped_ptr = (unsigned int*) result;
-	return result;
+    return result;
 }
 
 // buffer map with profiling
@@ -240,7 +240,7 @@ void*
 HGPU_GPU_buffer_map_with_profiling(HGPU_GPU_buffer* buffer,cl_command_queue queue){
     void* result = HGPU_GPU_buffer_map(buffer,queue);
     HGPU_GPU_buffer_profile_map(buffer);
-	return result;
+    return result;
 }
 
 // profile buffer map

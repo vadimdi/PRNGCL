@@ -38,9 +38,7 @@
 #ifndef HGPU_STRING_H
 #define HGPU_STRING_H
 
-#include "../hgpucl/platform.h"
-#include "../hgpucl/hgpucl_constants.h"
-#include "hgpu_error.h"
+#include "hgpu.h"
 
                     int   HGPU_string_char_replace(char* str, char search, char replace);
                    void   HGPU_string_to_lowercase(char* str);

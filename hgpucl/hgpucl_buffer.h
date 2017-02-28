@@ -39,38 +39,7 @@
 #ifndef HGPUCL_BUFFER_H
 #define HGPUCL_BUFFER_H
 
-#include <CL/cl.h>
-#include "platform.h"
-#include "hgpucl_error.h"
-#include "hgpucl_constants.h"
-#include "../include/hgpu_enum.h"
-#include "../include/hgpu_string.h"
-#include "../include/hgpu_timer.h"
-
-
-    // structure for buffer
-    typedef struct{
-                           cl_mem   buffer;
-                             char*  name;                              // buffer's name
-                             void*  host_ptr;
-                     unsigned int*  mapped_ptr;                        // ptr to corresponding host memory after mapping
-                           size_t   size;
-                           size_t   sizeof_element;                    // sizeof buffer element ( sizeof(...) )
-            HGPU_GPU_buffer_types   buffer_type;
-                // profiling data __________________________
-                         cl_event   buffer_write_event;                // event for buffer write
-                         cl_event   buffer_read_event;                 // event for buffer read
-                         cl_ulong   buffer_write_start;                // buffer start write time
-                         cl_ulong   buffer_write_finish;               // buffer finish write time
-                           double   buffer_write_elapsed_time;         // total buffer write time (in nanoseconds)
-                           double   buffer_write_elapsed_time_squared; // total buffer write time squared (in nanoseconds) - for deviation calculation
-                              int   buffer_write_number_of;            // total number of writes - for deviation calculation
-                         cl_ulong   buffer_read_start;                 // buffer start read time
-                         cl_ulong   buffer_read_finish;                // buffer finish read time
-                           double   buffer_read_elapsed_time;          // total buffer read time (in nanoseconds)
-                           double   buffer_read_elapsed_time_squared;  // total buffer read time squared (in nanoseconds) - for deviation calculation
-                              int   buffer_read_number_of;             // total number of reads - for deviation calculation
-    } HGPU_GPU_buffer;
+#include "hgpucl.h"
 
                    void   HGPU_GPU_buffers_add(HGPU_GPU_buffer*** buffers,HGPU_GPU_buffer* buffer);
                    void   HGPU_GPU_buffers_delete(HGPU_GPU_buffer*** buffers);

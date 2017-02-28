@@ -38,20 +38,7 @@
 #ifndef HGPU_PARAMETERS_H
 #define HGPU_PARAMETERS_H
 
-#include "../hgpucl/platform.h"
-#include "../hgpucl/hgpucl_constants.h"
-#include "hgpu_error.h"
-#include "hgpu_string.h"
-#include "hgpu_io.h"
-#include "hgpu_enum.h"
-
-    // structure for arrays of init parameters
-    typedef struct{
-                             char*  parameter;
-                              int   value_integer;
-                           double   value_double;
-                             char*  value_text;
-    } HGPU_parameter;
+#include "hgpu.h"
 
          HGPU_parameter** HGPU_parameters_new(unsigned int number_of_parameters);
          HGPU_parameter** HGPU_parameters_clone(HGPU_parameter** parameters);

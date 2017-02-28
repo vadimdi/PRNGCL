@@ -33,7 +33,6 @@ SRCS = PRNGCL.cpp \
 	
 HDRS = PRNGCL.h \
 	hgpucl/hgpucl.h \
-	hgpucl/hgpucl.h \
 	hgpucl/hgpucl_buffer.h \
 	hgpucl/hgpucl_constants.h \
 	hgpucl/hgpucl_context.h \
@@ -42,14 +41,21 @@ HDRS = PRNGCL.h \
 	hgpucl/hgpucl_kernel.h \
 	hgpucl/hgpucl_platforms.h \
 	hgpucl/hgpucl_program.h \
+	hgpucl/hgpucl_structs.h \
+	include/hgpu.h \
+	include/hgpu_constants.h \
 	include/hgpu_convert.h \
 	include/hgpu_enum.h \
 	include/hgpu_error.h \
 	include/hgpu_io.h \
 	include/hgpu_md5.h \
 	include/hgpu_parameters.h \
+	include/hgpu_platform.h \
 	include/hgpu_string.h \
+	include/hgpu_strucs.h \
 	include/hgpu_timer.h \
+	include/hgpu_types.h \
+	randomcl/hgpu_prng.h \
 	randomcl/hgpu_prng_test.h
 
 is_64=$(shell s=`uname -m`; if (echo $$s | grep x86_64 > /dev/null); then echo 1; fi)
